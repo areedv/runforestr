@@ -1,0 +1,15 @@
+Package: runforestr
+Title: Run, Forest. Run!
+Version: 0.0.0.9000
+Authors@R: person("Edvardsen", "Are", email = "are.edvardsen@helse-nord.no",
+  role = c("cre", "aut"))
+Description: Parse and play with run data
+Depends: R (>= 3.3.2)
+Imports:
+  digest,
+  magrittr,
+  tibble,
+  xml2
+License: GPL-2
+Encoding: UTF-8
+LazyData: true
