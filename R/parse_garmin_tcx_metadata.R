@@ -8,7 +8,7 @@
 #' Since input data may contain several activities, this function should not
 #' be called directly but rather via parse_garmin_tcx 'ref'
 #'
-#' @param tcx_nodeset xml_nodeset from the tcx file
+#' @param tcx_nodeset xml_nodeset from the tcx file, all children of 'Activity'
 #'
 #' @return a tibble with observations as rows and varables as columns
 #' @export
@@ -19,7 +19,7 @@ parse_garmin_tcx_metadata <- function(tcx_nodeset, ns) {
 
   date_time_format <- "%FT%X" #2017-02-02T16:01:09.000Z
 
-  ActivityXPath <- "//d1:Activity"
+  #ActivityXPath <- "/"
   IdXPath <- "//d1:Id"
   LapStartTimeXPath <- "//d1:Lap/@StartTime"
   TotalTimeSecondsXPath <- "//d1:Lap/d1:TotalTimeSeconds"
@@ -31,7 +31,6 @@ parse_garmin_tcx_metadata <- function(tcx_nodeset, ns) {
   IntensityXPath <- "//d1:Lap/d1:Intensity"
   TriggerMethodXPath <- "//d1:Lap/d1:TriggerMethod"
 
-  #ns <- xml2::xml_ns(tcx_nodeset)
 
   # use hash of Activity Id as unique identifier
   ActivityId <- tcx_nodeset %>%
