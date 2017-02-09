@@ -21,7 +21,7 @@ parse_garmin_tcx <- function(tcx_file) {
     xml2::xml_find_all(ActivityXPath, ns) %>%
     length()
 
-  if (n < 0) {
+  if (n == 0) {
     stop("There are no activities in the tcx-file")
   }
 
