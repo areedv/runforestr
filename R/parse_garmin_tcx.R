@@ -39,5 +39,8 @@ parse_garmin_tcx <- function(tcx_file) {
     }
   }
 
+  # postprocess
+  data <- postprocess_track(meta = meta, data = data)
+
   list(meta=meta, data=data)
 }
