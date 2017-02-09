@@ -31,14 +31,13 @@ parse_garmin_tcx <- function(tcx_file) {
       xml2::xml_find_all(xpath, ns)
     if (i == 1) {
       meta <- parse_garmin_tcx_metadata(sub_doc, ns)
-      #data <- parse_garmin_tcx_trackpoint(sub_doc)
+      data <- parse_garmin_tcx_trackpoint(sub_doc, ns)
     } else {
       meta <- cbind(parse_garmin_tcx_metadata(sub_doc, ns))
-      #data <- cbind(parse_garmin_tcx_trackpoint(sub_doc))
+      data <- cbind(parse_garmin_tcx_trackpoint(sub_doc, ns))
 
     }
   }
 
-  #list(meta=meta, data=data)
-  meta
+  list(meta=meta, data=data)
 }
