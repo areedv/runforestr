@@ -1,16 +1,18 @@
-
-#' Title
+#' Parse xml file from Garmin (tcx)
+#'
+#' Provide track and corresponding meta data. Currently some post processing
+#' is also performed
 #'
 #' @param tcx_file
 #'
-#' @return
+#' @return list containg tibbles 'meta' and 'data'
 #' @export
 #'
 #' @examples
 
 parse_garmin_tcx <- function(tcx_file) {
 
-  # these sould rather be part of some config file
+  # these should rather be part of some config file
   ActivityXPath <- "/d1:TrainingCenterDatabase/d1:Activities/d1:Activity"
 
   doc <- xml2::read_xml(tcx_file)
