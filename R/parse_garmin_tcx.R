@@ -30,10 +30,10 @@ parse_garmin_tcx <- function(tcx_file) {
     sub_doc <- doc %>%
       xml2::xml_find_all(xpath, ns)
     if (i == 1) {
-      meta <- parse_garmin_tcx_metadata(sub_doc)
+      meta <- parse_garmin_tcx_metadata(sub_doc, ns)
       #data <- parse_garmin_tcx_trackpoint(sub_doc)
     } else {
-      meta <- cbind(parse_garmin_tcx_metadata(sub_doc))
+      meta <- cbind(parse_garmin_tcx_metadata(sub_doc, ns))
       #data <- cbind(parse_garmin_tcx_trackpoint(sub_doc))
 
     }
