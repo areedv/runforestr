@@ -31,52 +31,51 @@ parse_garmin_tcx_metadata <- function(tcx_nodeset) {
   IntensityXPath <- "//d1:Lap/d1:Intensity"
   TriggerMethodXPath <- "//d1:Lap/d1:TriggerMethod"
 
-  doc <- xml2::read_xml(tcx_nodeset)
-  ns <- xml2::xml_ns(doc)
+  ns <- xml2::xml_ns(tcx_nodeset)
 
   # use hash of Activity Id as unique identifier
-  ActivityId <- doc %>%
-    xml2::xml_find_all(ActivityXPath, ns) %>%
+  ActivityId <- tcx_nodeset %>%
+    #xml2::xml_find_all(ActivityXPath, ns) %>%
     xml2::xml_find_first(IdXPath, ns) %>%
     xml2::xml_text() %>%
     digest(algo = "md5", serialize = FALSE)
 
   # identify activity, assume start time
-  Laps <- doc %>%
+  Laps <- tcx_nodeset %>%
     xml2::xml_find_all(LapStartTimeXPath, ns) %>%
     xml2::xml_text() %>%
     strptime(., date_time_format) %>%
     as.POSIXct()
 
-  TotalTimeSeconds <- doc %>%
+  TotalTimeSeconds <- tcx_nodeset %>%
     xml2::xml_find_all(TotalTimeSecondsXPath, ns) %>%
     xml2::xml_double()
 
-  DistanceMeters <- doc %>%
+  DistanceMeters <- tcx_nodeset %>%
     xml2::xml_find_all(DistanceMetersXPath, ns) %>%
     xml2::xml_double()
 
-  MaximumSpeed <- doc %>%
+  MaximumSpeed <- tcx_nodeset %>%
     xml2::xml_find_all(MaximumSpeedXPath, ns) %>%
     xml2::xml_double()
 
-  Calories <- doc %>%
+  Calories <- tcx_nodeset %>%
     xml2::xml_find_all(CaloriesXPath, ns) %>%
     xml2::xml_integer()
 
-  AverageHeartRateBpm <- doc %>%
+  AverageHeartRateBpm <- tcx_nodeset %>%
     xml2::xml_find_all(AverageHeartRateBpmXPath, ns) %>%
     xml2::xml_integer()
 
-  MaximumHeartRateBpm <- doc %>%
+  MaximumHeartRateBpm <- tcx_nodeset %>%
     xml2::xml_find_all(MaximumHeartRateBpmXPath, ns) %>%
     xml2::xml_integer()
 
-  Intensity <- doc %>%
+  Intensity <- tcx_nodeset %>%
     xml2::xml_find_all(IntensityXPath, ns) %>%
     xml2::xml_text()
 
-  TriggerMethod <- doc %>%
+  TriggerMethod <- tcx_nodeset %>%
     xml2::xml_find_all(TriggerMethodXPath, ns) %>%
     xml2::xml_text()
 
