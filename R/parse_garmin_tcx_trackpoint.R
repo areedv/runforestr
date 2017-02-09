@@ -1,15 +1,14 @@
 
 
-parse_garmin_tcx_trackpoint <- function(tcx_file) {
+parse_garmin_tcx_trackpoint <- function(tcx_nodeset, ns) {
 
   date_time_format <- "%FT%X" #2017-02-02T16:01:09.000Z
 
   TrackpointXPath <- "//d1:Lap/d1:Track"
 
-  doc <- xml2::read_xml(tcx_file)
   # parse only below the 'Track' node
-  tp <- xml2::xml_find_all(doc, TrackpointXPath, ns = xml2::xml_ns(doc))
-  ns <- xml2::xml_ns(tp)
+  tp <- tcx_nodeset %>%
+    xml2::xml_find_all(TrackpointXPath, ns)
 
   TimeXPath <- "d1:Trackpoint/d1:Time"
   TrackpointXPath <- "d1:Trackpoint"
