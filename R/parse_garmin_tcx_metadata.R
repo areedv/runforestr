@@ -38,7 +38,7 @@ parse_garmin_tcx_metadata <- function(tcx_nodeset, ns) {
     #xml2::xml_find_all(ActivityXPath, ns) %>%
     xml2::xml_find_first(IdXPath, ns) %>%
     xml2::xml_text() %>%
-    digest(algo = "md5", serialize = FALSE)
+    digest::digest(algo = "md5", serialize = FALSE)
 
   # identify activity, assume start time
   Laps <- tcx_nodeset %>%
