@@ -22,7 +22,7 @@ parse_garmin_tcx <- function(tcx_file) {
     length()
 
   if (n == 0) {
-    stop("There are no activities in the tcx-file")
+    stop(paste("There are no activities in", tcx_file))
   }
 
   for (i in 1:n) {
