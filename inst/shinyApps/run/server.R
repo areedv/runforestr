@@ -1,8 +1,8 @@
 function(input, output) {
-  output$hist <- renderPlot({
-    hist(rnorm(input$n))
+  output$map <- leaflet::renderLeaflet({
+    r_map(t$data)
   })
-  output$plot <- renderPlot({
-    plot(rnorm(input$n))
+  output$plot <- renderPlotly({
+    r_time(t$data)
   })
 }

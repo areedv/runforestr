@@ -4,13 +4,13 @@ fluidPage(
            numericInput(inputId = "n", "Sample Size", value = 25)
            ),
     column(width = 6,
-           plotOutput(outputId = "hist")
+           leaflet::leafletOutput(outputId = "map")
            ),
     column(width = 3)
   ),
   fluidRow(
     column(width = 12,
-           plotOutput(outputId = "plot")
+           plotlyOutput(outputId = "plot")
            )
   )
 )
