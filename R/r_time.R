@@ -11,6 +11,11 @@
 #' @examples
 r_time <- function(data, t0, t1, segments) {
 
+  # for nicer plot, force zero altitude below sealevel
+  alt <- data$AltitudeMeters
+  alt[alt <= 0] <- 0
+  data <- dplyr::mutate(data, AltitudeMeters = alt)
+
 
   second_y <- list(title = "Elevation",
                    overlaying = "y",
