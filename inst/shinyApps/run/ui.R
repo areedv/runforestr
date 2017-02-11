@@ -10,7 +10,7 @@ fluidPage(
   ),
   fluidRow(
     column(width = 12,
-           plotlyOutput(outputId = "plot")
+           plotly::plotlyOutput(outputId = "plot")
            )
   )
 )
