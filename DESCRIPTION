@@ -9,6 +9,7 @@ Imports:
   digest,
   leaflet,
   magrittr,
+  plotly,
   tibble,
   xml2
 License: GPL-2
