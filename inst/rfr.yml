@@ -2,14 +2,15 @@
 
 ## Runners data
 runner :
-  maxPulse=170
-  intensityZones=c(.6, .72, .82, .87, .92, .97)
+  pulseRest : 40
+  pulseMax : 170
+  intensityZones : c(.6, .72, .82, .87, .92, .97)
   # Model intensity zones according to 'maxPulse' or 'heartRateReserve'
-  intesityZoneModel=maxPulse
+  intesityZoneModel : maxPulse
 
 ## Filters (and smoothing)
 filter :
   altitude :
-    medWindow=11
+    medWindow : 11
   pace :
-    medWindow=3
+    medWindow : 3
