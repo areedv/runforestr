@@ -7,6 +7,8 @@ runner :
   intensityZones : c(.6, .72, .82, .87, .92, .97)
   # Model intensity zones according to 'maxPulse' or 'heartRateReserve'
   intesityZoneModel : maxPulse
+  paceMin : 9.8
+  paceMax : 0
 
 ## Filters (and smoothing)
 filter :

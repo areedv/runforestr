@@ -51,7 +51,7 @@ r_time <- function(data, t0, t1, segments) {
   third_y <- list(title = "",
                   overlaying = "y", side = "right",
                   zeroline = FALSE, showgrid = FALSE, showticklabels = FALSE,
-                  range = c(9.8, 0))
+                  range = c(conf$runner$paceMin, conf$runner$paceMax))
 
   p <- plotly::plot_ly(x = ~ data$Time, mode = "lines") %>%
     # test with pulse zones
