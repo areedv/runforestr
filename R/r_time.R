@@ -32,7 +32,7 @@ r_time <- function(data, t0, t1, segments) {
   }
 
   # pulse
-  first_y <- list(title = "", overlaying = "n", side = "left",
+  first_y <- list(title = "Heart rate", overlaying = "n", side = "left",
                   zeroline = FALSE,
                   #range = c(min(data$HeartRateBpm), max(data$HeartRateBpm)),
                   range = c(conf$runner$pulseRest, conf$runner$pulseMax),
