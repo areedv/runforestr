@@ -53,7 +53,10 @@ r_time <- function(data, t0, t1, segments) {
                   zeroline = FALSE, showgrid = FALSE, showticklabels = FALSE,
                   range = c(conf$runner$paceMin, conf$runner$paceMax))
 
-  p <- plotly::plot_ly(x = ~ data$Time, mode = "lines") %>%
+  # x-axis should be selected from function parameter, static for now
+  x_data <- data$Time
+
+  p <- plotly::plot_ly(x = ~ x_data, mode = "lines") %>%
     # test with pulse zones
     plotly::add_trace(y = ~ rep(147, length(data$Time)), name = "Z3", mode = "none",
               type = "scatter", yaxis = "y1", fillcolor = "rgba(0, 255, 0, 0.3)",
