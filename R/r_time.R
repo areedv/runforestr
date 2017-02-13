@@ -56,8 +56,25 @@ r_time <- function(data, t0, t1, segments) {
   # x-axis should be selected from function parameter, static for now
   x_data <- data$Time
 
+  # set puls zone colors and alpha in five levels starting on max intesity
+  pzc <- c("rgba(255, 0, 0, 0.3)", "rgba(255, 255, 0, 0.3)",
+           "rgba(0, 255, 0, 0.3)", "rgba(0, 0, 255, 0.3)",
+           "rgba(255, 255, 255, 0.3)")
+
+  # recycle the last (zone 1, white) for below zones
+  zones <- pulse_intesity_zones(pulseRest = conf$runner$pulseRest,
+                                pulseMax = conf$runner$pulseMax,
+                                relativeIntesities = conf$runner$intensityZones,
+                                model = conf$runner$intesityZoneModel)
+
+  redundant_zones <- length(zones) - lenght(pzc)
+  if (redundant_zones > 0) {
+    pzc <- c(pzc, rep(pzc(5), redundant_zones))
+  }
+
   p <- plotly::plot_ly(x = ~ x_data, mode = "lines") %>%
     # test with pulse zones
+
     plotly::add_trace(y = ~ rep(147, length(data$Time)), name = "Z3", mode = "none",
               type = "scatter", yaxis = "y1", fillcolor = "rgba(0, 255, 0, 0.3)",
               fill = "tonexty", hoverinfo = "text") %>%
