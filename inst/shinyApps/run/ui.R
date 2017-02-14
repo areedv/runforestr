@@ -1,16 +1,24 @@
-fluidPage(
-  fluidRow(
-    column(width = 3,
-           numericInput(inputId = "n", "Sample Size", value = 25)
-           ),
-    column(width = 6,
-           leaflet::leafletOutput(outputId = "map")
-           ),
-    column(width = 3)
-  ),
-  fluidRow(
-    column(width = 12,
-           plotly::plotlyOutput(outputId = "plot")
+navbarPage("Run Forest. Run!", id="run",
+           tabPanel("Interactive map",
+                    div(class="outer",
+
+                        tags$head(
+                          # Include our custom CSS
+                          includeCSS("styles.css")
+                          #includeScript("gomap.js")
+                        ),
+                        leaflet::leafletOutput(outputId = "map", width="100%",
+                                               height="100%"),
+
+                        absolutePanel(id = "trackpoint",
+                                      class = "panel panel-default",
+                                      fixed = TRUE,
+                                      draggable = TRUE, top = "auto",
+                                      bottom = 10, left = 10, right = 10,
+                                      height = "auto",
+                                      plotly::plotlyOutput(outputId = "plot")
+                        )
+                    )
            )
-  )
 )
+
