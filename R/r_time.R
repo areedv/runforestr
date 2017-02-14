@@ -57,9 +57,9 @@ r_time <- function(data, t0, t1, segments) {
   x_data <- data$Time
 
   # set puls zone colors and alpha in five levels starting on max intesity
-  pzc <- c("rgba(255, 0, 0, 0.3)", "rgba(255, 255, 0, 0.3)",
-           "rgba(0, 255, 0, 0.3)", "rgba(0, 0, 255, 0.3)",
-           "rgba(255, 255, 255, 0.3)")
+  pzc <- c("rgba(255, 100, 100, 0.3)", "rgba(255, 255, 100, 0.3)",
+           "rgba(100, 255, 100, 0.3)", "rgba(100, 100, 255, 0.3)",
+           "rgba(200, 200, 255, 0.3)", "rgba(255, 255, 255, 0.3)")
 
   # recycle the last (zone 1, white) for below zones
   zones <- pulse_intesity_zones(pulseRest = conf$runner$pulseRest,
@@ -69,32 +69,20 @@ r_time <- function(data, t0, t1, segments) {
 
   redundant_zones <- length(zones) - length(pzc)
   if (redundant_zones > 0) {
-    pzc <- c(pzc, rep(pzc[5], redundant_zones))
+    pzc <- c(pzc, rep(pzc[length(pzc)], redundant_zones))
   }
-  #pzc <- rev(pzc)
+  pzc <- rev(pzc)
   #zones <- rev(zones)
 
   p <- plotly::plot_ly(x = ~ x_data, mode = "lines")
   # test with pulse zones
-  for (i in rev(1:length(zones))) {
-    print(zones[i])
-    z <- zones[i]
-    p <- plotly::add_trace(p, y = ~ rep(z, length(x_data)),
-                           name = paste0("Z", as.character(i)),
+  for (i in 1:(length(zones) - 1)) {
+    p <- plotly::add_trace(p, y = rep(zones[i + 1], length(x_data)),
+                           name = paste0("I", as.character(i)),
                            mode = "none", type = "scatter", yaxis = "y1",
-                           fillcolor = pzc[i], fill = "tozeroy",
+                           fillcolor = pzc[i + 1], fill = "tonexty",
                            hoverinfo = "text")
   }
-
-  # plotly::add_trace(y = ~ rep(147, length(data$Time)), name = "Z3", mode = "none",
-  #           type = "scatter", yaxis = "y1", fillcolor = "rgba(0, 255, 0, 0.3)",
-  #           fill = "tonexty", hoverinfo = "text") %>%
-  # plotly::add_trace(y = ~ rep(160, length(data$Time)), name = "Z4", mode = "none",
-  #           type = "scatter", yaxis = "y1", fillcolor = "rgba(255, 255, 0, 0.3)",
-  #           fill = "tonexty", hoverinfo = "text") %>%
-  # plotly::add_trace(y = ~ rep(170, length(data$Time)), name = "Z5", mode = "none",
-  #           type = "scatter", yaxis = "y1", fillcolor = "rgba(255, 0, 0, 0.3)",
-  #           fill = "tonexty", hoverinfo = "text") %>%
 
   p <- plotly::add_trace(p, y = ~ data$FakeAltitudeMeters, name = "Elevation",
                          type = "scatter", mode = "none", fill ="tozeroy",
