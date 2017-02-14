@@ -39,7 +39,7 @@ r_time <- function(data, t0, t1, segments) {
   y2 <- c(min(data$FakeAltitudeMeters), max(data$FakeAltitudeMeters) * 2)
 
   # pace
-  y3 <- c(conf$runner$paceMin, conf$runner$paceMax)
+  y3 <- c(conf$runner$paceMin, conf$runner$paceMax * 1.1)
 
   # x-axis should be selected from function parameter, static for now
   x_data <- data$Time
