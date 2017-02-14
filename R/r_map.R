@@ -22,10 +22,5 @@ r_map <- function(data, t0, t1) {
   # process data
   data <- dplyr::filter(.data = data, Time >= t0 & Time <= t1)
 
-  m <- leaflet::leaflet() %>%
-    leaflet::addProviderTiles("CartoDB.Positron") %>%
-    leaflet::clearBounds() %>%
-    leaflet::addPolylines(data$LongitudeDegrees, data$LatitudeDegrees)
-
-  m
+  list(data=data)
 }
