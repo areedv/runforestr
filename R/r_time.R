@@ -67,41 +67,53 @@ r_time <- function(data, t0, t1, segments) {
                                 relativeIntesities = conf$runner$intensityZones,
                                 model = conf$runner$intesityZoneModel)
 
-  redundant_zones <- length(zones) - lenght(pzc)
+  redundant_zones <- length(zones) - length(pzc)
   if (redundant_zones > 0) {
-    pzc <- c(pzc, rep(pzc(5), redundant_zones))
+    pzc <- c(pzc, rep(pzc[5], redundant_zones))
+  }
+  #pzc <- rev(pzc)
+  #zones <- rev(zones)
+
+  p <- plotly::plot_ly(x = ~ x_data, mode = "lines")
+  # test with pulse zones
+  for (i in rev(1:length(zones))) {
+    print(zones[i])
+    z <- zones[i]
+    p <- plotly::add_trace(p, y = ~ rep(z, length(x_data)),
+                           name = paste0("Z", as.character(i)),
+                           mode = "none", type = "scatter", yaxis = "y1",
+                           fillcolor = pzc[i], fill = "tozeroy",
+                           hoverinfo = "text")
   }
 
-  p <- plotly::plot_ly(x = ~ x_data, mode = "lines") %>%
-    # test with pulse zones
+  # plotly::add_trace(y = ~ rep(147, length(data$Time)), name = "Z3", mode = "none",
+  #           type = "scatter", yaxis = "y1", fillcolor = "rgba(0, 255, 0, 0.3)",
+  #           fill = "tonexty", hoverinfo = "text") %>%
+  # plotly::add_trace(y = ~ rep(160, length(data$Time)), name = "Z4", mode = "none",
+  #           type = "scatter", yaxis = "y1", fillcolor = "rgba(255, 255, 0, 0.3)",
+  #           fill = "tonexty", hoverinfo = "text") %>%
+  # plotly::add_trace(y = ~ rep(170, length(data$Time)), name = "Z5", mode = "none",
+  #           type = "scatter", yaxis = "y1", fillcolor = "rgba(255, 0, 0, 0.3)",
+  #           fill = "tonexty", hoverinfo = "text") %>%
 
-    plotly::add_trace(y = ~ rep(147, length(data$Time)), name = "Z3", mode = "none",
-              type = "scatter", yaxis = "y1", fillcolor = "rgba(0, 255, 0, 0.3)",
-              fill = "tonexty", hoverinfo = "text") %>%
-    plotly::add_trace(y = ~ rep(160, length(data$Time)), name = "Z4", mode = "none",
-              type = "scatter", yaxis = "y1", fillcolor = "rgba(255, 255, 0, 0.3)",
-              fill = "tonexty", hoverinfo = "text") %>%
-    plotly::add_trace(y = ~ rep(170, length(data$Time)), name = "Z5", mode = "none",
-              type = "scatter", yaxis = "y1", fillcolor = "rgba(255, 0, 0, 0.3)",
-              fill = "tonexty", hoverinfo = "text") %>%
-    plotly::add_trace(y = ~ data$FakeAltitudeMeters, name = "Elevation",
-              type = "scatter", mode = "none", fill ="tozeroy",
-              yaxis = "y2", fillcolor = "rgba(190, 190, 190, 0.3)",
-              text = paste("Alt:", data$AltitudeMeters),
-              hoverinfo = "text") %>%
+  p <- plotly::add_trace(p, y = ~ data$FakeAltitudeMeters, name = "Elevation",
+                         type = "scatter", mode = "none", fill ="tozeroy",
+                         yaxis = "y2", fillcolor = "rgba(190, 190, 190, 0.3)",
+                         text = paste("Alt:", data$AltitudeMeters),
+                         hoverinfo = "text") %>%
     plotly::add_trace(y = ~ data$HeartRateBpm,
-              type = "scatter", mode = "none", name = "HR",
-              line = list(color = "rgb(0, 0, 0)", dash = "dot"),
-              yaxis = "y1", fill = "tozeroy", fillcolor = "rgba(255, 255, 255, 1)",
-              text = paste("HR:", data$HeartRateBpm),
-              hoverinfo = "text") %>%
+                      type = "scatter", mode = "none", name = "HR",
+                      line = list(color = "rgb(0, 0, 0)", dash = "dot"),
+                      yaxis = "y1", fill = "tozeroy", fillcolor = "rgba(255, 255, 255, 1)",
+                      text = paste("HR:", data$HeartRateBpm),
+                      hoverinfo = "text") %>%
 
     plotly::add_trace(y = ~ data$Pace, name = "Pace", type = "scatter", mode = "line",
-              yaxis = "y3",
-              text = paste("Pace:", as.difftime(data$Pace, units = "mins")),
-              hoverinfo = "text") %>%
+                      yaxis = "y3",
+                      text = paste("Pace:", as.difftime(data$Pace, units = "mins")),
+                      hoverinfo = "text") %>%
     plotly::layout(yaxis = first_y, yaxis2 = second_y, yaxis3 = third_y,
-           legend = list(orientation = "h"))
+                   legend = list(orientation = "h"))
 
   p
 
