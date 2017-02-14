@@ -3,6 +3,9 @@
 #' Provide track and corresponding meta data. Currently some post processing
 #' is also performed
 #'
+#' For testing, use:
+#' t <- parse_garmin_tcx(system.file("extdata/activity_1554734944.tcx", package = "runforestr"))
+#'
 #' @param tcx_file
 #'
 #' @return list containg tibbles 'meta' and 'data'
