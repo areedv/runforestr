@@ -9,6 +9,11 @@
 #' @examples
 postprocess_track <- function(meta, data) {
 
+  # get config
+  if (!exists("conf")) {
+    conf <- yaml::yaml.load_file(system.file("rfr.yml", package = "runforestr"))
+  }
+
   # link laps to each trackpoint
   laps <- dim(meta)[1]
   lap <- rep(Sys.time(), dim(data)[1])
@@ -28,7 +33,7 @@ postprocess_track <- function(meta, data) {
   delta_mins <- difftime(data$Time[2:len], data$Time[1:len-1], units = "mins")
   delta_km <- (data$DistanceMeters[2:len]-data$DistanceMeters[1:len-1]) / 1000
   Pace <- c(NA, delta_mins / delta_km)
-  Pace[Pace > 10] <- 10
+  Pace[Pace > conf$runner$paceMin] <- conf$runner$paceMin
   data <- tibble::add_column(data, Pace = Pace)
 
 }
