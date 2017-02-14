@@ -17,8 +17,16 @@ navbarPage("Run Forest. Run!", id="run",
                                       bottom = 10, left = 10, right = 10,
                                       height = "auto",
                                       plotly::plotlyOutput(outputId = "plot")
+                                      ),
+                        absolutePanel(id = "test",
+                                      class = "panel panel-default",
+                                      fixed = TRUE, top=100, right=10,
+                                      left = "auto", width = 600,
+                                      height = "auto",
+                                      verbatimTextOutput("hover")
+                                      )
                         )
                     )
            )
-)
+
 
