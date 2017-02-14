@@ -22,5 +22,4 @@ r_map <- function(data, t0, t1) {
   # process data
   data <- dplyr::filter(.data = data, Time >= t0 & Time <= t1)
 
-  list(data=data)
 }
