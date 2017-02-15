@@ -14,7 +14,7 @@ navbarPage("Run Forest. Run!", id="run",
                                       class = "panel panel-default",
                                       fixed = TRUE,
                                       draggable = TRUE, top = "auto",
-                                      bottom = 10, left = 10, right = 10,
+                                      bottom = 5, left = 5, right = 5,
                                       height = "auto",
                                       plotly::plotlyOutput(outputId = "plot")
                                       ),
