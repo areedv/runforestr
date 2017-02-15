@@ -1,3 +1,6 @@
+library(magrittr)
+library(plotly)
+
 function(input, output, session) {
 
   # get the data
@@ -14,14 +17,21 @@ function(input, output, session) {
   })
 
   output$map <- leaflet::renderLeaflet({
-    leaflet::leaflet() %>%
+    m <- leaflet::leaflet() %>%
       leaflet::addProviderTiles("CartoDB.Positron") %>%
       leaflet::clearBounds() %>%
       leaflet::addPolylines(k$lng, k$lat)
+    # shift view nw
+    lngs <- m$x$limits$lng
+    lats <- m$x$limits$lat
+    m <- leaflet::fitBounds(m, lng1 = lngs[1], lat1 = lats[1] - diff(lats),
+                            lng2 = lngs[2] + diff(lngs), lat2 = lats[2])
+    m
   })
 
   observe({
     marker <- th()
+    # clear all markers when empty hover data
     if (dim(marker)[1] == 0) {
       leaflet::leafletProxy("map", data = marker) %>%
         leaflet::clearGroup("markers")
