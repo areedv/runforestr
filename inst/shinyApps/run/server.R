@@ -76,7 +76,8 @@ function(input, output, session) {
                            name = "Elevation", type = "scatter", mode = "none",
                            fill ="tozeroy", yaxis = "y2",
                            fillcolor = "rgba(190, 190, 190, 0.3)",
-                           text = paste("Alt:", l$data$AltitudeMeters),
+                           text = paste("Alt:", round(l$data$AltitudeMeters,
+                                                      digits = 0)),
                            hoverinfo = "text") %>%
 
       plotly::add_trace(y = ~ l$data$HeartRateBpm,
@@ -90,8 +91,7 @@ function(input, output, session) {
       plotly::add_trace(y = ~ l$data$Pace, name = "Pace", mode = "lines",
                         type = "scatter", yaxis = "y3",
                         line = list(color = "rgba(0, 0 , 255, 0.7"),
-                        text = paste("Pace:", as.difftime(l$data$Pace,
-                                                          units = "mins")),
+                        text = paste("Pace:", l$data$PacePrintFormat),
                         hoverinfo = "text") %>%
       plotly::layout(yaxis = first_y, yaxis2 = second_y, yaxis3 = third_y,
                      legend = list(orientation = "h"))
