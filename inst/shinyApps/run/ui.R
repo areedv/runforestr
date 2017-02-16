@@ -19,13 +19,15 @@ navbarPage("Run Forest. Run!", id="run",
                                       plotly::plotlyOutput(
                                         outputId = "trackpoint_plot")
                                       ),
-                        absolutePanel(id = "test",
+                        absolutePanel(id = "distribution",
                                       class = "panel panel-default",
                                       fixed = TRUE, top=100, right=10,
-                                      left = "auto", width = 600,
+                                      left = "auto", width = 250,
                                       height = "auto",
-                                      verbatimTextOutput("hover")
+                                      plotly::plotlyOutput(
+                                        outputId = "distribution_lap_plot"
                                       )
+                                    )
                         )
                     )
            )
