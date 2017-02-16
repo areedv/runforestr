@@ -36,4 +36,10 @@ postprocess_track <- function(meta, data) {
   Pace[Pace > conf$runner$paceMin] <- conf$runner$paceMin
   data <- tibble::add_column(data, Pace = Pace)
 
+  # add pace, nicely formatted as %M%S (mm:ss), via the epoch
+  ppf <- as.character(data$Pace * 60) %>%
+    strptime(format = "%s") %>%
+    format("%M:%S")
+  data <- tibble::add_column(data, PacePrintFormat = ppf)
+
 }
