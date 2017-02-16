@@ -43,7 +43,7 @@ function(input, output, session) {
     }
   })
 
-  output$plot <- plotly::renderPlotly({
+  output$trackpoint_plot <- plotly::renderPlotly({
     l <- r_time(t$data)
 
     # set y axis

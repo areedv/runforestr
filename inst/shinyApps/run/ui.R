@@ -16,7 +16,8 @@ navbarPage("Run Forest. Run!", id="run",
                                       draggable = TRUE, top = "auto",
                                       bottom = 5, left = 5, right = 5,
                                       height = "auto",
-                                      plotly::plotlyOutput(outputId = "plot")
+                                      plotly::plotlyOutput(
+                                        outputId = "trackpoint_plot")
                                       ),
                         absolutePanel(id = "test",
                                       class = "panel panel-default",
