@@ -7,6 +7,8 @@ function(input, output, session) {
   k <- r_map(t$data)
   k <- dplyr::transmute(k, lng = LongitudeDegrees, lat = LatitudeDegrees)
 
+  l <- r_time(t$data)
+
 
   # reactive trackpoint hover data
   th <- reactive({
@@ -43,8 +45,12 @@ function(input, output, session) {
     }
   })
 
+  # output$distribution_lap_plot <- plotly::renderPlotly({
+  #   l <- r_time(t$data)
+  #   i <- make_intesity_distribution()
+  # })
+
   output$trackpoint_plot <- plotly::renderPlotly({
-    l <- r_time(t$data)
 
     # set y axis
     # pulse
