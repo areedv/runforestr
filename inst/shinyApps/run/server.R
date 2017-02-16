@@ -45,10 +45,22 @@ function(input, output, session) {
     }
   })
 
-  # output$distribution_lap_plot <- plotly::renderPlotly({
-  #   l <- r_time(t$data)
-  #   i <- make_intesity_distribution()
-  # })
+  output$distribution_lap_plot <- plotly::renderPlotly({
+
+    i <- make_intesity_distribution(dplyr::distinct(l$data$Lap),
+                                    l$data$HeartRateBpm,
+                                    l$data$Time,
+                                    l$zones)
+    p <- plotly::plot_ly(x = i$ireldist[,1],
+                         y = as.numeric(colnames(i$reldist)),
+                         type = "bar", orientation = "h")
+
+    for (i in 1:(length(l$zones) - 1)) {
+      p <- plotly::add_trace(p, x = i$reldist[,(i + 1)])
+    }
+    plotly::layout(p, barmode = "stack")
+    p
+  })
 
   output$trackpoint_plot <- plotly::renderPlotly({
 
