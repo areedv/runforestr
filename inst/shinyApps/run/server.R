@@ -47,19 +47,76 @@ function(input, output, session) {
 
   output$distribution_lap_plot <- plotly::renderPlotly({
 
-    i <- make_intesity_distribution(dplyr::distinct(l$data$Lap),
+    if (input$lap_type == "equal distance"){
+      laps <- make_laps_distance(l$data$Time,
+                                 l$data$DistanceMeters,
+                                 convert_factor = 1000)
+    } else {
+      laps <- t$meta$Laps
+    }
+
+    z <- make_intesity_distribution(laps,
                                     l$data$HeartRateBpm,
                                     l$data$Time,
                                     l$zones)
-    p <- plotly::plot_ly(x = i$ireldist[,1],
-                         y = as.numeric(colnames(i$reldist)),
-                         type = "bar", orientation = "h")
 
-    for (i in 1:(length(l$zones) - 1)) {
-      p <- plotly::add_trace(p, x = i$reldist[,(i + 1)])
+    # select absolute or relative data
+    data <- z$idist
+
+    # yaxis, range also including upper and lower part of first and last bar
+    y_vals <- as.numeric(row.names(data)) -1
+    y_range <- c(length(y_vals) + 1 , 0)
+
+    # plotly does not understand tibbles (?), convert to data frame
+    d <- as.data.frame(data)
+
+    # format mm:ss annotations
+    ## converter function for seconds
+    f <- function(x) {
+      x %>% as.character() %>%
+        strptime(format = "%s") %>%
+        format("%M:%S")
     }
-    plotly::layout(p, barmode = "stack")
-    p
+
+    anot_pos <- t(z$idist) %>%
+      colSums()
+    anot <- anot_pos %>%
+      purrr::map_chr(., f) %>%
+      as.vector()
+
+    p <- plotly::plot_ly(x = d[, 1],
+                         y = y_vals,
+                         type = "bar",
+                         orientation = "h",
+                         hoverinfo = "text",
+                         marker = list(color = l$pzc[2],
+                                       line = list(color = "rgb(248, 248, 249",
+                                                   width = 1)
+                                       )
+                         )
+
+    for (i in 2:dim(d)[2]) {
+      p <- plotly::add_trace(p, x = d[, i],
+                             marker = list(color = l$pzc[i + 1])
+                             )
+    }
+
+    p %>% plotly::layout(barmode = "stack", showlegend = FALSE,
+                         xaxis = list(showticklabels = FALSE,
+                                      showgrid = FALSE,
+                                      zeroline = FALSE),
+                         yaxis = list(title = "",
+                                      range = y_range,
+                                      showticklabels = FALSE,
+                                      showgrid = FALSE,
+                                      zeroline = FALSE),
+                         margin = list(l = 10, r = 10, pad = 2)) %>%
+      add_annotations(xref = "x", yref = "y", x = 0, y = y_vals,
+                      xanchor = "left", text = anot, showarrow = FALSE,
+                      font = list(size = 10)) %>%
+      add_annotations(xref = "x", yref = "y", x = max(anot_pos), y = y_vals,
+                      xanchor = "right", text = y_vals, showarrow = FALSE,
+                      font = list(size = 10))
   })
 
   output$trackpoint_plot <- plotly::renderPlotly({
