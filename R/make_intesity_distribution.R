@@ -50,6 +50,7 @@ make_intesity_distribution <- function(laps, tp_pulse, tp_time,
   # remove the first empty (NA) entry from creation...
   n <- dim(idist)[1]
   idist <- idist[2:n,]
+  ireldist <- ireldist[2:n,]
 
   list(idist = tibble::as_tibble(idist), ireldist = tibble::as_tibble(ireldist))
 }
