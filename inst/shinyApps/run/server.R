@@ -89,7 +89,7 @@ function(input, output, session) {
                          type = "bar",
                          orientation = "h",
                          hoverinfo = "text",
-                         marker = list(color = l$pzc[2],
+                         marker = list(color = l$pzc2[2],
                                        line = list(color = "rgb(248, 248, 249",
                                                    width = 1)
                                        )
@@ -97,7 +97,7 @@ function(input, output, session) {
 
     for (i in 2:dim(d)[2]) {
       p <- plotly::add_trace(p, x = d[, i],
-                             marker = list(color = l$pzc[i + 1])
+                             marker = list(color = l$pzc2[i + 1])
                              )
     }
 

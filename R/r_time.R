@@ -48,6 +48,9 @@ r_time <- function(data, t0, t1, segments) {
   pzc <- c("rgba(255, 100, 100, 0.3)", "rgba(255, 255, 100, 0.3)",
            "rgba(100, 255, 100, 0.3)", "rgba(100, 100, 255, 0.3)",
            "rgba(200, 200, 255, 0.3)", "rgba(255, 255, 255, 0.3)")
+  pzc2 <- c("rgba(255, 100, 100, 0.5)", "rgba(255, 255, 100, 0.5)",
+            "rgba(100, 255, 100, 0.5)", "rgba(100, 100, 255, 0.5)",
+            "rgba(200, 200, 255, 0.5)", "rgba(255, 255, 255, 0.5)")
 
   # recycle the last (zone 1, white) for below zones
   zones <- pulse_intesity_zones(pulseRest = conf$runner$pulseRest,
@@ -59,9 +62,9 @@ r_time <- function(data, t0, t1, segments) {
     pzc <- c(pzc, rep(pzc[length(pzc)], redundant_zones))
   }
   pzc <- rev(pzc)
+  pzc2 <- rev(pzc2)
 
 
-
-  list(data=data, y1=y1, y2=y2, y3=y3, x_data=x_data, pzc=pzc, zones=zones)
+  list(data=data, y1=y1, y2=y2, y3=y3, x_data=x_data, pzc=pzc, pzc2=pzc2, zones=zones)
 
 }
