@@ -18,10 +18,10 @@ parse_garmin_tcx_trackpoint <- function(tcx_nodeset, ns) {
   DistanceMetersXPath <- "d1:DistanceMeters"
   HeartRateBpmXPath <- "d1:HeartRateBpm/d1:Value"
 
-  # assume a Time node for every record
+  # assume a Time node for every record, always UTC (?)
   Time <- xml2::xml_find_all(tp, TimeXPath, ns) %>%
     xml2::xml_text() %>%
-    strptime(., date_time_format) %>%
+    strptime(., date_time_format, tz = "GMT") %>%
     as.POSIXct()
 
   # assume all other vars missing for some records

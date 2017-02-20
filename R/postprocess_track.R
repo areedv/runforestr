@@ -14,6 +14,10 @@ postprocess_track <- function(meta, data) {
     conf <- yaml::yaml.load_file(system.file("rfr.yml", package = "runforestr"))
   }
 
+  # possible to change timezone here?
+  attr(meta$Laps, "tzone") <- "CET"
+  attr(data$Time, "tzone") <- "CET"
+
   # link laps to each trackpoint
   laps <- dim(meta)[1]
   lap <- rep(Sys.time(), dim(data)[1])
@@ -40,6 +44,7 @@ postprocess_track <- function(meta, data) {
   ppf <- as.character(data$Pace * 60) %>%
     strptime(format = "%s") %>%
     format("%M:%S")
+
   data <- tibble::add_column(data, PacePrintFormat = ppf)
 
 }

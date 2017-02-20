@@ -41,6 +41,10 @@ r_time <- function(data, t0, t1, segments) {
   # pace
   y3 <- c(conf$runner$paceMin, conf$runner$paceMax * 1.1)
 
+
+  # plotly does not understand time zones, convert here
+  # attr(data$Time, "tzone") <- "CET"
+  print(attributes(data$Time))
   # x-axis should be selected from function parameter, static for now
   x_data <- data$Time
 
@@ -65,6 +69,7 @@ r_time <- function(data, t0, t1, segments) {
   pzc2 <- rev(pzc2)
 
 
-  list(data=data, y1=y1, y2=y2, y3=y3, x_data=x_data, pzc=pzc, pzc2=pzc2, zones=zones)
+  list(data=data, y1=y1, y2=y2, y3=y3, x_data=x_data, pzc=pzc,
+       pzc2=pzc2, zones=zones)
 
 }

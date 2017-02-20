@@ -39,11 +39,11 @@ parse_garmin_tcx_metadata <- function(tcx_nodeset, ns) {
     xml2::xml_text() %>%
     digest::digest(algo = "md5", serialize = FALSE)
 
-  # identify activity, assume start time
+  # identify activity, assume start time, always UTC(?)
   Laps <- tcx_nodeset %>%
     xml2::xml_find_all(LapStartTimeXPath, ns) %>%
     xml2::xml_text() %>%
-    strptime(., date_time_format) %>%
+    strptime(., date_time_format, tz = "GMT") %>%
     as.POSIXct()
 
   TotalTimeSeconds <- tcx_nodeset %>%
