@@ -124,7 +124,8 @@ function(input, output, session) {
     # set y axis
     # pulse
     first_y <- list(title = "Heart rate", overlaying = "n", side = "left",
-                    zeroline = FALSE, range = l$y1, showgrid = FALSE)
+                    zeroline = FALSE, range = l$y1,
+                    showgrid = TRUE)
 
     # elevation
     second_y <- list(title = "", overlaying = "y", side = "right",
@@ -165,11 +166,28 @@ function(input, output, session) {
 
       plotly::add_trace(y = ~ l$data$Pace, name = "Pace", mode = "lines",
                         type = "scatter", yaxis = "y3",
-                        line = list(color = "rgba(0, 0 , 255, 0.7"),
+                        line = list(color = "rgba(0, 0 , 255, 0.7",
+                                    shape = "spline",
+                                    smoothig = 0),
                         text = paste("Pace:", l$data$PacePrintFormat),
                         hoverinfo = "text") %>%
-      plotly::layout(yaxis = first_y, yaxis2 = second_y, yaxis3 = third_y,
-                     legend = list(orientation = "h"))
+
+      # fake time and distance to provide tooltips
+      add_trace(y = ~ l$y1[1], name = "Time", mode = "lines",
+                type = "scatter", yaxis = "y1",
+                line = list(color = "rgba(255, 255, 255, 1)"),
+                text = paste("Time:", strftime(l$data$Time,
+                                               format = "%H:%M")),
+                hoverinfo = "text") %>%
+
+      add_trace(y = ~ l$y1[2], name = "Distance", mode = "lines",
+                type = "scatter", yaxis = "y1",
+                line = list(color = "rgba(255, 255, 255, 1)"),
+                text = paste("Dist:", round(l$data$DistanceMeters/1000,
+                                            digits = 2)),
+                hoverinfo = "text") %>%
+      plotly::layout(yaxis = first_y, yaxis2 = second_y,
+                     yaxis3 = third_y, legend = list(orientation = "h"))
     p
 
   })
