@@ -1,5 +1,6 @@
 library(magrittr)
 library(plotly)
+library(runforestr)
 
 function(input, output, session) {
 
@@ -116,7 +117,12 @@ function(input, output, session) {
                       font = list(size = 10)) %>%
       add_annotations(xref = "x", yref = "y", x = max(anot_pos), y = y_vals,
                       xanchor = "right", text = y_vals, showarrow = FALSE,
-                      font = list(size = 10))
+                      font = list(size = 10)) %>%
+      plotly::config(displayModeBar = FALSE,
+             displayLogo = FALSE,
+             modeBarButtonsToRemove = list("sendDataToCloud", "zoom2d",
+                                           "pan2d", "select2d", "select2d",
+                                           "zoomIn2d", "zoomOut2d", "toImage"))
   })
 
   output$trackpoint_plot <- plotly::renderPlotly({
@@ -187,7 +193,8 @@ function(input, output, session) {
                                             digits = 2)),
                 hoverinfo = "text") %>%
       plotly::layout(yaxis = first_y, yaxis2 = second_y,
-                     yaxis3 = third_y, legend = list(orientation = "h"))
+                     yaxis3 = third_y, legend = list(orientation = "h")) %>%
+      plotly::config(displayModeBar = "hover")
     p
 
   })
