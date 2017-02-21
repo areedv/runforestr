@@ -75,7 +75,7 @@ function(input, output, session) {
     ## converter function for seconds
     f <- function(x) {
       x %>% as.character() %>%
-        strptime(format = "%s") %>%
+        strptime(format = "%s", tz = "NA") %>%
         format("%M:%S")
     }
 
@@ -123,6 +123,57 @@ function(input, output, session) {
              modeBarButtonsToRemove = list("sendDataToCloud", "zoom2d",
                                            "pan2d", "select2d", "select2d",
                                            "zoomIn2d", "zoomOut2d", "toImage"))
+  })
+
+  output$distribution_zone_plot <- plotly::renderPlotly({
+    # first, make one lap covering all, later to be given by zoom
+    laps <- c(min(l$data$Lap), max(l$data$Lap))
+
+    # get distribution
+    z <- make_intesity_distribution(laps, l$data$HeartRateBpm, l$data$Time,
+                                    l$zones)
+    # select absolute or relative data
+    data <- z$idist
+
+     # plotly does not understand tibbles (?), convert to data frame
+    d <- as.data.frame(data)
+
+    # format mm:ss annotations
+    ## converter function for seconds
+    f <- function(x) {
+      x %>% as.character() %>%
+        strptime(format = "%s", tz = "NA") %>%
+        format("%H:%M:%S")
+    }
+
+    anot_pos <- max(d)
+    anot <- d %>%
+      purrr::map_chr(., f) %>%
+      as.vector()
+
+    y_vals <- 1:length(d)
+    p <- plotly::plot_ly(x = as.vector(d, mode = "numeric"),
+                         y = ~ y_vals,
+                         type = "bar",
+                         orientation = "h",
+                         hoverinfo = "text",
+                         marker = list(color=l$pzc2[2:length(l$pzc2)]))
+
+    p %>% plotly::layout(showlegend = FALSE,
+                         xaxis = list(showticklabels = FALSE,
+                                      showgrid = FALSE,
+                                      zeroline = FALSE),
+                         yaxis = list(title = "",
+                                      showticklabels = FALSE,
+                                      showgrid = FALSE,
+                                      zeroline = FALSE),
+                         margin = list(l = 10, r = 10, pad = 2)) %>%
+      add_annotations(xref = "x", yref = "y", x = anot_pos, y = y_vals,
+                      xanchor = "left", text = anot, showarrow = FALSE,
+                      font = list(size = 10)) %>%
+      add_annotations(xref = "x", yref = "y", x = 0, y = y_vals,
+                      xanchor = "right", text = paste0("I", y_vals), showarrow = FALSE,
+                      font = list(size = 10))
   })
 
   output$trackpoint_plot <- plotly::renderPlotly({
