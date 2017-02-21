@@ -29,10 +29,23 @@ navbarPage("Run Forest. Run!", id="run",
                                                   choices = c("device laps",
                                                               "equal distance"),
                                                   selected = "From device",
-                                                  multiple = FALSE),
+                                                  multiple = FALSE)
+                                      ),
+                        absolutePanel(id = "distribution2",
+                                      class = "panel panel-default",
+                                      fixed = TRUE, top=100, right=5,
+                                      left = "auto", width = 250,
+                                      height = "auto",
                                       plotly::plotlyOutput(
-                                        outputId = "distribution_lap_plot"
-                                      )
+                                        outputId = "distribution_lap_plot")
+                        ),
+                        absolutePanel(id = "distribution3",
+                                      class = "panel panel-default",
+                                      fixed = TRUE, top=300, right=5,
+                                      left = "auto", width = 250,
+                                      height = 50,
+                                      plotly::plotlyOutput(
+                                        outputId = "distribution_zone_plot")
                                     )
                         )
                     )
