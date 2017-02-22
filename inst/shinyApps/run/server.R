@@ -185,11 +185,11 @@ function(input, output, session) {
     p <- plotly::plot_ly(x = ~ l$x_data, #Smode = "lines",
                          key = row.names(l$data), source = "trackpoint")
     # test with pulse zones
-    for (i in 1:(length(l$zones) - 1)) {
-      p <- plotly::add_trace(p, y = rep(l$zones[i + 1], length(l$x_data)),
-                             name = paste0("I", as.character(i)),
+    for (i in 1:(length(l$zones) - 0)) {
+      p <- plotly::add_trace(p, y = rep(l$zones[i + 0], length(l$x_data)),
+                             name = paste0("I", as.character(i - 1)),
                              mode = "none", type = "scatter", yaxis = "y1",
-                             fillcolor = l$pzc[i + 1], fill = "tonexty",
+                             fillcolor = l$pzc[i + 0], fill = "tonexty",
                              hoverinfo = "text")
     }
 
