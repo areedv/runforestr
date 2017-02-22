@@ -31,7 +31,7 @@ h1, h2, h3, h4 { font-weight: 400; }
   transition: opacity 500ms 1s;
 }
 
-#distribution {
+#laps_select {
   /* Appearance */
   background-color: white;
   padding: 10px 10px 10px 10px;
@@ -41,6 +41,29 @@ h1, h2, h3, h4 { font-weight: 400; }
   zoom: 0.9;
   transition: opacity 500ms 1s;
 }
+
+#laps {
+  /* Appearance */
+  background-color: white;
+  padding: 10px 10px 10px 10px;
+  cursor: move;
+  /* Fade out while not hovering */
+  opacity: 0.85;
+  zoom: 0.9;
+  transition: opacity 500ms 1s;
+}
+
+#intensity_zones {
+  /* Appearance */
+  background-color: white;
+  padding: 5px 5px 5px 5px;
+  cursor: move;
+  /* Fade out while not hovering */
+  opacity: 0.85;
+  zoom: 0.9;
+  transition: opacity 500ms 1s;
+}
+
 
 #controls:hover {
   /* Fade in while hovering */

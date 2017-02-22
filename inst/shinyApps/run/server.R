@@ -100,7 +100,7 @@ function(input, output, session) {
                          yaxis = list(title = "", range = y_range,
                                       showticklabels = FALSE, showgrid = FALSE,
                                       zeroline = FALSE),
-                         margin = list(l = 10, r = 10, pad = 2)) %>%
+                         margin = list(l = 10, r = 10, t = 5, b = 5, pad = 2)) %>%
 
       add_annotations(xref = "x", yref = "y", x = 0, y = 1:length(anot),
                       xanchor = "left", text = anot, showarrow = FALSE,
@@ -144,7 +144,7 @@ function(input, output, session) {
                          orientation = "h",
                          hoverinfo = "text",
                          marker = list(color=l$pzc2),
-                         width = 250, height = 200)
+                         width = 200, height = 100)
 
     p %>% plotly::layout(showlegend = FALSE,
                          xaxis = list(showticklabels = FALSE,
@@ -154,7 +154,7 @@ function(input, output, session) {
                                       showticklabels = FALSE,
                                       showgrid = FALSE,
                                       zeroline = FALSE),
-                         margin = list(l = 10, r = 10, pad = 2),
+                         margin = list(l = 10, r = 10, t = 5, b = 5, pad = 2),
                          autosize = FALSE) %>%
       add_annotations(xref = "x", yref = "y", x = anot_pos, y = id$iz,
                       xanchor = "left", text = anot, showarrow = FALSE,
