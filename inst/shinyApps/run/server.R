@@ -19,6 +19,9 @@ function(input, output, session) {
     k
   })
 
+  # reactive trackpoint select data
+
+
   output$map <- leaflet::renderLeaflet({
     m <- leaflet::leaflet() %>%
       leaflet::addProviderTiles("CartoDB.Positron") %>%
@@ -241,5 +244,15 @@ function(input, output, session) {
   hk <- renderText({
     d <- plotly::event_data("plotly_hover", source = "trackpoint")
     if (is.null(d)) -1 else as.integer(d$key[1])
+  })
+
+  output$test_panel <- renderPrint({
+    f <- function(x) {
+      x %>% as.character() %>%
+        strptime(format = "%s", tz = "CET") %>%
+        format("%Y-%m-%d %H:%M:%S")
+    }
+    sk <- plotly::event_data("plotly_relayout", source = "trackpoint")
+    if (is.null(sk)) "test_panel" else c(f(as.numeric(sk[1])/1000), f(as.numeric(sk[2])/1000))
   })
 }
