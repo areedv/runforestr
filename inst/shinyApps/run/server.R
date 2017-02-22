@@ -143,7 +143,8 @@ function(input, output, session) {
                          type = "bar",
                          orientation = "h",
                          hoverinfo = "text",
-                         marker = list(color=l$pzc2))
+                         marker = list(color=l$pzc2),
+                         width = 250, height = 200)
 
     p %>% plotly::layout(showlegend = FALSE,
                          xaxis = list(showticklabels = FALSE,
@@ -153,13 +154,14 @@ function(input, output, session) {
                                       showticklabels = FALSE,
                                       showgrid = FALSE,
                                       zeroline = FALSE),
-                         margin = list(l = 10, r = 10, pad = 2)) %>%
+                         margin = list(l = 10, r = 10, pad = 2),
+                         autosize = FALSE) %>%
       add_annotations(xref = "x", yref = "y", x = anot_pos, y = id$iz,
-                      xanchor = "left", text = anot, showarrow = FALSE) %>%
+                      xanchor = "left", text = anot, showarrow = FALSE,
+                      font = list(size = 10)) %>%
       add_annotations(xref = "x", yref = "y", x = 0, y = id$iz,
                       xanchor = "right", text = paste0("I", id$iz),
-                      showarrow = FALSE#, font = list(size = 10))
-      )
+                      showarrow = FALSE, font = list(size = 10))
   })
 
   output$trackpoint_plot <- plotly::renderPlotly({
