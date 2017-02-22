@@ -7,7 +7,8 @@
 #' endpoints are included, not for upper limits, _e.g._ the vector
 #' c(40, 60, 80) equals intervalls [40, 60>, [60, 80>
 #'
-#' @return
+#' @return A (grouped) data frame of durations (in seconds) grouped by lap(s)
+#' and intesity zone
 #' @export
 #'
 #' @examples
