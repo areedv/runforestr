@@ -1,56 +1,44 @@
 #' Title
 #'
-#' @param laps
-#' @param tp_pulse
-#' @param tp_time
-#' @param pulse_zones
+#' @param laps vector of POSIX date and times with laps + 1 elements
+#' @param pulse vector of pulse (bpm) obs
+#' @param time vector of POSIX time obs (corresponding to pulse)
+#' @param pulse_zones vector of pulse zone limits (bpm). For lower limits
+#' endpoints are included, not for upper limits, _e.g._ the vector
+#' c(40, 60, 80) equals intervalls [40, 60>, [60, 80>
 #'
 #' @return
 #' @export
 #'
 #' @examples
-make_intesity_distribution <- function(laps, tp_pulse, tp_time,
+make_intesity_distribution <- function(laps, pulse, time,
                                        pulse_zones) {
 
   if (length(laps) < 2) {
     stop("'laps' must contain at least two points in time")
   }
 
-  if (length(tp_pulse) != length(tp_time)) {
-    stop("Parameters 'tp_puls' and 'tp_time must be of equal length")
+  if (length(pulse) != length(time)) {
+    stop("Parameters 'tp_puls' and 'time must be of equal length")
   }
 
-  # make empty df for intensity distribution
-  n <- length(pulse_zones) - 1
-  idist <- as.data.frame(matrix(ncol = n))
-  ireldist <- idist
+  # make intensity zone for each pulse record, include endpoint in last zone
+  iz <- findInterval(pulse, pulse_zones, rightmost.closed = TRUE)
 
-  # a tibble of data including timediff, last obs set to zero duration
-  n <- length(tp_pulse)
-  d <- as.numeric(difftime(tp_time[2:n], tp_time[1:(n - 1)], units = "secs"))
-  data <- tibble::tibble(pulse=tp_pulse, time=tp_time,
-                        duration = c(d, 0))
+  # make timediff between records, set last obs to zero duration
+  n <- length(time)
+  td <- as.numeric(difftime(time[2:n], time[1:(n - 1)], units = "secs"))
+  td <- c(td, 0)
 
-  # iterate over laps
-  for (i in 1:(length(laps) - 1)) {
+  # make lap id for each record,  include endpoint at end of last lap
+  lap <- findInterval(time, laps, rightmost.closed = TRUE)
 
-    # this lap
-    lap <- dplyr::filter(data, time >= laps[i] & time < laps[i + 1])
+  # make a nice data frame to work on
+  df <- data.frame(lap=lap, iz=iz, td=td)
 
-    # iterate zones
-    it <- vector()
-    for (j in 1:(length(pulse_zones) - 1)) {
-      ind <- lap$pulse >= pulse_zones[j] & lap$pulse < pulse_zones[j + 1]
-      it[j] <- sum(lap$duration[ind])
-    }
-    idist <- rbind(idist, it)
-    ireldist <- rbind(ireldist, (it / sum(it)))
-  }
-
-  # remove the first empty (NA) entry from creation...
-  n <- dim(idist)[1]
-  idist <- idist[2:n,]
-  ireldist <- ireldist[2:n,]
-
-  list(idist = tibble::as_tibble(idist), ireldist = tibble::as_tibble(ireldist))
+  # group by lap and intesity zone and sum duration to make intensity
+  # distribution
+  id <- df %>%
+    dplyr::group_by(lap, iz) %>%
+    dplyr::summarise(duration = sum(td))
 }
