@@ -44,7 +44,7 @@ r_time <- function(data, t0, t1, segments) {
 
   # plotly does not understand time zones, convert here
   # attr(data$Time, "tzone") <- "CET"
-  print(attributes(data$Time))
+
   # x-axis should be selected from function parameter, static for now
   x_data <- data$Time
 
