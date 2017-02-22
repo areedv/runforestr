@@ -58,22 +58,16 @@ function(input, output, session) {
     id <- make_intesity_distribution(laps, l$data$HeartRateBpm, l$data$Time,
                                     l$zones)
 
-    # # select absolute or relative data
-    # data <- z$idist
-
     # yaxis, range also including upper and lower part of first and last bar
-    # y_vals <- as.numeric(row.names(data)) -1
     y_range <- c(max(id$lap) + 1 , 0)
 
-    # # plotly does not understand tibbles (?), convert to data frame
-    # d <- as.data.frame(data)
-
     # format mm:ss annotations
-    ## converter function for seconds
-    f <- function(x) {
+    ## converter function for seconds, provde "unknown" time zone to avoid
+    ## local time being applied by strptime...
+    f <- function(x, time_format = "%M:%S") {
       x %>% as.character() %>%
         strptime(format = "%s", tz = "NA") %>%
-        format("%M:%S")
+        format(time_format)
     }
 
     anot_pos <- id %>%
@@ -85,56 +79,51 @@ function(input, output, session) {
       as.vector()
 
     p <- plotly::plot_ly(x = id$duration[id$iz == 0], y = id$lap[id$iz == 0],
+                         name = "I0",
                          type = "bar", orientation = "h", hoverinfo = "text",
-                         marker = list(color = l$pzc2[2],
+                         marker = list(color = l$pzc2[1],
                                        line = list(color = "rgb(248, 248, 249",
                                                    width = 1)
                                        )
                          )
 
-    for (i in 2:max(id$iz)) {
+    for (i in 1:max(id$iz)) {
       p <- plotly::add_trace(p, x = id$duration[id$iz == i],
-                             y = id$lap[id$iz == i],
+                             y = id$lap[id$iz == i], name = paste0("I", i),
                              marker = list(color = l$pzc2[i + 1])
                              )
     }
 
     p %>% plotly::layout(barmode = "stack", showlegend = FALSE,
-                         xaxis = list(showticklabels = FALSE,
-                                      showgrid = FALSE,
+                         xaxis = list(showticklabels = FALSE, showgrid = FALSE,
                                       zeroline = FALSE),
-                         yaxis = list(title = "",
-                                      range = y_range,
-                                      showticklabels = FALSE,
-                                      showgrid = FALSE,
+                         yaxis = list(title = "", range = y_range,
+                                      showticklabels = FALSE, showgrid = FALSE,
                                       zeroline = FALSE),
                          margin = list(l = 10, r = 10, pad = 2)) %>%
+
       add_annotations(xref = "x", yref = "y", x = 0, y = 1:length(anot),
                       xanchor = "left", text = anot, showarrow = FALSE,
                       font = list(size = 10)) %>%
-      add_annotations(xref = "x", yref = "y", x = max(anot_pos),
-                      y = 1:length(anot),
-                      xanchor = "right", text = as.character(1:length(anot)),
-                      showarrow = FALSE, font = list(size = 10)) %>%
-      plotly::config(displayModeBar = FALSE,
-             displayLogo = FALSE,
+
+      add_annotations(xref = "x", yref = "y", x = max(anot_pos$d),
+                      y = 1:length(anot), xanchor = "right",
+                      text = as.character(1:length(anot)), showarrow = FALSE,
+                      font = list(size = 10)) %>%
+      plotly::config(displayModeBar = FALSE, displayLogo = FALSE,
              modeBarButtonsToRemove = list("sendDataToCloud", "zoom2d",
                                            "pan2d", "select2d", "select2d",
                                            "zoomIn2d", "zoomOut2d", "toImage"))
   })
 
   output$distribution_zone_plot <- plotly::renderPlotly({
+
     # first, make one lap covering all, later to be given by zoom
-    laps <- c(min(l$data$Lap), max(l$data$Lap))
+    laps <- c(min(l$data$Time), max(l$data$Time))
 
     # get distribution
-    z <- make_intesity_distribution(laps, l$data$HeartRateBpm, l$data$Time,
+    id <- make_intesity_distribution(laps, l$data$HeartRateBpm, l$data$Time,
                                     l$zones)
-    # select absolute or relative data
-    data <- z$idist
-
-     # plotly does not understand tibbles (?), convert to data frame
-    d <- as.data.frame(data)
 
     # format mm:ss annotations
     ## converter function for seconds
@@ -144,18 +133,17 @@ function(input, output, session) {
         format("%H:%M:%S")
     }
 
-    anot_pos <- max(d)
-    anot <- d %>%
+    anot_pos <- id$duration
+    anot <- id$duration %>%
       purrr::map_chr(., f) %>%
       as.vector()
 
-    y_vals <- 1:length(d)
-    p <- plotly::plot_ly(x = as.vector(d, mode = "numeric"),
-                         y = ~ y_vals,
+    p <- plotly::plot_ly(x = anot_pos, y = id$iz,
+                         #y = ~ y_vals,
                          type = "bar",
                          orientation = "h",
                          hoverinfo = "text",
-                         marker = list(color=l$pzc2[2:length(l$pzc2)]))
+                         marker = list(color=l$pzc2))
 
     p %>% plotly::layout(showlegend = FALSE,
                          xaxis = list(showticklabels = FALSE,
@@ -166,12 +154,12 @@ function(input, output, session) {
                                       showgrid = FALSE,
                                       zeroline = FALSE),
                          margin = list(l = 10, r = 10, pad = 2)) %>%
-      add_annotations(xref = "x", yref = "y", x = anot_pos, y = y_vals,
-                      xanchor = "left", text = anot, showarrow = FALSE,
-                      font = list(size = 10)) %>%
-      add_annotations(xref = "x", yref = "y", x = 0, y = y_vals,
-                      xanchor = "right", text = paste0("I", y_vals), showarrow = FALSE,
-                      font = list(size = 10))
+      add_annotations(xref = "x", yref = "y", x = anot_pos, y = id$iz,
+                      xanchor = "left", text = anot, showarrow = FALSE) %>%
+      add_annotations(xref = "x", yref = "y", x = 0, y = id$iz,
+                      xanchor = "right", text = paste0("I", id$iz),
+                      showarrow = FALSE#, font = list(size = 10))
+      )
   })
 
   output$trackpoint_plot <- plotly::renderPlotly({
@@ -180,7 +168,7 @@ function(input, output, session) {
     # pulse
     first_y <- list(title = "Heart rate", overlaying = "n", side = "left",
                     zeroline = FALSE, range = l$y1,
-                    showgrid = TRUE)
+                    showgrid = FALSE)
 
     # elevation
     second_y <- list(title = "", overlaying = "y", side = "right",
