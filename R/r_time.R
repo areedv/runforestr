@@ -11,6 +11,19 @@
 #' @examples
 r_time <- function(data, t0, t1, segments) {
 
+  # prepare for reactive data
+  if(missing(t0)) {
+    t0 <- min(data$Time)
+  }
+
+  if (missing(t1)) {
+    t1 <- max(data$Time)
+  }
+
+  # filter by time window
+  data <- dplyr::filter(.data = data, as.numeric(Time) >= as.numeric(t0) &
+                          as.numeric(Time) <= as.numeric(t1))
+
   # for nicer plot:
   # smooth and fake altitude if obs below sealevel
   alt <- runmed(data$AltitudeMeters, 11)

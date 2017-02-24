@@ -8,7 +8,11 @@ function(input, output, session) {
   k <- r_map(t$data)
   k <- dplyr::transmute(k, lng = LongitudeDegrees, lat = LatitudeDegrees)
 
-  l <- r_time(t$data)
+  t0 <- min(t$data$Time)
+  t1 <- max(t$data$Time)
+  l <- reactive({
+    r_time(t$data, sk()[1], sk()[2])
+  })
 
 
   # reactive trackpoint hover data
@@ -246,13 +250,20 @@ function(input, output, session) {
     if (is.null(d)) -1 else as.integer(d$key[1])
   })
 
-  output$test_panel <- renderPrint({
-    f <- function(x) {
-      x %>% as.character() %>%
-        strptime(format = "%s", tz = "CET") %>%
-        format("%Y-%m-%d %H:%M:%S")
-    }
+  sk <- renderText({
+  # output$test_panel <- renderPrint({
+  #   f <- function(x) {
+  #     x %>% as.character() %>%
+  #       strptime(format = "%s", tz = "CET") %>%
+  #       format("%Y-%m-%d %H:%M:%S")
+  #   }
     sk <- plotly::event_data("plotly_relayout", source = "trackpoint")
-    if (is.null(sk)) "test_panel" else c(f(as.numeric(sk[1])/1000), f(as.numeric(sk[2])/1000))
+    # value 0 is at the start of the epoch which will be returned when
+    # resetting plot
+    if (as.numeric(sk[1]) == 0 | is.null(sk)) {
+      c(t0, t1)
+    } else {
+      c(as.numeric(sk[1])/1000, as.numeric(sk[2])/1000)
+    }
   })
 }
