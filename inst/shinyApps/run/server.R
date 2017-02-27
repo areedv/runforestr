@@ -10,12 +10,42 @@ function(input, output, session) {
 
   t0 <- min(t$data$Time)
   t1 <- max(t$data$Time)
-  l <- reactive({
-    r_time(t$data, sk()[1], sk()[2])
+  # l <- reactive({
+  #   r_time(t$data, t0, t1)
+  # })
+
+  l <- reactiveValues()
+  l <- r_time(t$data, t0, t1)
+
+  # reactive trackpoint select data
+  td <- reactive({
+    sk <- plotly::event_data("plotly_relayout", source = "trackpoint")
+    # value 0 is at the start of the epoch which will be returned when
+    # resetting plot
+    if (as.numeric(sk[1]) == 0 | is.null(sk)) {
+      c(t0, t1)
+      #r_time(t$data, t0, t1)
+    } else {
+      c(as.numeric(sk[1])/1000, as.numeric(sk[2])/1000)
+      #r_time(t$data, as.numeric(sk[1])/1000, as.numeric(sk[2])/1000)
+    }
   })
 
+  observe({
+    time_window <- td
+    if (!is.null(time_window)) {
+      l <- r_time(t$data, time_window[1], time_window[2])
+    } else {
+      l <- r_time(t$data, t0, t1)
+    }
+  })
 
   # reactive trackpoint hover data
+  hk <- reactive({
+    d <- plotly::event_data("plotly_hover", source = "trackpoint")
+    if (is.null(d)) -1 else as.integer(d$key[1])
+  })
+
   th <- reactive({
     k <- dplyr::mutate(k, key = as.integer(row.names(k)))
     k <- dplyr::filter(k, key == hk())
@@ -23,7 +53,6 @@ function(input, output, session) {
     k
   })
 
-  # reactive trackpoint select data
 
 
   output$map <- leaflet::renderLeaflet({
@@ -243,27 +272,5 @@ function(input, output, session) {
       plotly::config(displayModeBar = "hover")
     p
 
-  })
-
-  hk <- renderText({
-    d <- plotly::event_data("plotly_hover", source = "trackpoint")
-    if (is.null(d)) -1 else as.integer(d$key[1])
-  })
-
-  sk <- renderText({
-  # output$test_panel <- renderPrint({
-  #   f <- function(x) {
-  #     x %>% as.character() %>%
-  #       strptime(format = "%s", tz = "CET") %>%
-  #       format("%Y-%m-%d %H:%M:%S")
-  #   }
-    sk <- plotly::event_data("plotly_relayout", source = "trackpoint")
-    # value 0 is at the start of the epoch which will be returned when
-    # resetting plot
-    if (as.numeric(sk[1]) == 0 | is.null(sk)) {
-      c(t0, t1)
-    } else {
-      c(as.numeric(sk[1])/1000, as.numeric(sk[2])/1000)
-    }
   })
 }
