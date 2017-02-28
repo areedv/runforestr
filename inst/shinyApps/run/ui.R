@@ -15,7 +15,10 @@ navbarPage("Run Forest. Run!", id="run",
                                       fixed = TRUE, top=140, right=500,
                                       left = "auto", width = 400,
                                       height = "auto",
-                                      verbatimTextOutput("test_panel")
+                                      #verbatimTextOutput("test_panel")
+                                      fileInput("selected_data", "Load file",
+                                                multiple = FALSE,
+                                                accept = "*.tcx")
                         ),
                         absolutePanel(id = "laps",
                                       class = "panel panel-default",
