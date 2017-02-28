@@ -5,39 +5,37 @@ library(runforestr)
 function(input, output, session) {
 
   # get the data
+  t <- reactive({
+    parse_garmin_tcx(input$selected_data)
+  })
+
   k <- r_map(t$data)
   k <- dplyr::transmute(k, lng = LongitudeDegrees, lat = LatitudeDegrees)
 
   t0 <- min(t$data$Time)
   t1 <- max(t$data$Time)
-  # l <- reactive({
-  #   r_time(t$data, t0, t1)
-  # })
 
-  l <- reactiveValues()
   l <- r_time(t$data, t0, t1)
 
   # reactive trackpoint select data
-  td <- reactive({
+  #output$test_panel <- renderText({
+  sk <- reactive({
     sk <- plotly::event_data("plotly_relayout", source = "trackpoint")
     # value 0 is at the start of the epoch which will be returned when
     # resetting plot
-    if (as.numeric(sk[1]) == 0 | is.null(sk)) {
+    if (is.null(sk)) {
       c(t0, t1)
-      #r_time(t$data, t0, t1)
+    } else if (sk[1] == "TRUE") {
+      c(t0, t1)
     } else {
       c(as.numeric(sk[1])/1000, as.numeric(sk[2])/1000)
-      #r_time(t$data, as.numeric(sk[1])/1000, as.numeric(sk[2])/1000)
     }
   })
 
-  observe({
-    time_window <- td
-    if (!is.null(time_window)) {
-      l <- r_time(t$data, time_window[1], time_window[2])
-    } else {
-      l <- r_time(t$data, t0, t1)
-    }
+  # make filtered tp data for laps and intensity distribution
+  tp_filter <- reactive({
+    dplyr::filter(l$data, as.numeric(Time) >= as.numeric(sk()[1]) &
+                    as.numeric(Time) <= as.numeric(sk()[2]))
   })
 
   # reactive trackpoint hover data
@@ -60,7 +58,7 @@ function(input, output, session) {
       leaflet::addProviderTiles("CartoDB.Positron") %>%
       leaflet::clearBounds() %>%
       leaflet::addPolylines(k$lng, k$lat)
-    # shift view nw
+    # shift view se
     lngs <- m$x$limits$lng
     lats <- m$x$limits$lat
     m <- leaflet::fitBounds(m, lng1 = lngs[1], lat1 = lats[1] - diff(lats),
@@ -84,14 +82,18 @@ function(input, output, session) {
 
   output$distribution_lap_plot <- plotly::renderPlotly({
 
+    ll <- tp_filter()
     if (input$lap_type == "equal distance"){
-      laps <- make_laps_distance(l$data$Time, l$data$DistanceMeters,
+      #laps <- make_laps_distance(l$data$Time, l$data$DistanceMeters,
+      #                           convert_factor = 1000)
+      laps <- make_laps_distance(ll$Time, ll$DistanceMeters,
                                  convert_factor = 1000)
     } else {
-      laps <- t$meta$Laps
+      #laps <- t$meta$Laps
+      laps <- dplyr::distinct(ll, Lap) %>% magrittr::use_series(Lap)
     }
 
-    id <- make_intesity_distribution(laps, l$data$HeartRateBpm, l$data$Time,
+    id <- make_intesity_distribution(laps, ll$HeartRateBpm, ll$Time,
                                     l$zones)
 
     # yaxis, range also including upper and lower part of first and last bar
@@ -154,11 +156,13 @@ function(input, output, session) {
 
   output$distribution_zone_plot <- plotly::renderPlotly({
 
+    ll <- tp_filter()
     # first, make one lap covering all, later to be given by zoom
-    laps <- c(min(l$data$Time), max(l$data$Time))
+    #laps <- c(min(l$data$Time), max(l$data$Time))
+    laps <- c(min(ll$Time), max(ll$Time))
 
     # get distribution
-    id <- make_intesity_distribution(laps, l$data$HeartRateBpm, l$data$Time,
+    id <- make_intesity_distribution(laps, ll$HeartRateBpm, ll$Time,
                                     l$zones)
 
     # format mm:ss annotations
