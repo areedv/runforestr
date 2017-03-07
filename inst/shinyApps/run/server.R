@@ -182,7 +182,7 @@ function(input, output, session) {
       # get distribution
       id <- make_intesity_distribution(laps, ll$HeartRateBpm, ll$Time,
                                        l$zones)
-
+      print(id)
       # format mm:ss annotations
       ## converter function for seconds
       f <- function(x) {
@@ -196,12 +196,17 @@ function(input, output, session) {
         purrr::map_chr(., f) %>%
         as.vector()
 
+      # make indices for color vector corresponding to intensity zones
+      # represented
+      color_low <- min(id$iz) + 1
+      color_high <- max(id$iz) + 1
+
       p <- plotly::plot_ly(x = anot_pos, y = id$iz,
                            #y = ~ y_vals,
                            type = "bar",
                            orientation = "h",
                            hoverinfo = "text",
-                           marker = list(color=l$pzc2),
+                           marker = list(color=l$pzc2[color_low:color_high]),
                            width = 200, height = 100)
 
       p %>% plotly::layout(showlegend = FALSE,
