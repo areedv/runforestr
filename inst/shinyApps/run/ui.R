@@ -1,16 +1,16 @@
 navbarPage("Run Forest. Run!", id="run",
-           tabPanel("Data",
-                    absolutePanel(id = "test_panel",
-                                  class = "panel panel-default",
-                                  fixed = TRUE, top=140, right=500,
-                                  left = "auto", width = 400,
-                                  height = "auto",
-                                  #verbatimTextOutput("test_panel")
-                                  fileInput("selected_data", "Load file",
-                                            multiple = FALSE,
-                                            accept = ".tcx")
-                    )
-                    ),
+           # tabPanel("Data",
+           #          absolutePanel(id = "test_panel",
+           #                        class = "panel panel-default",
+           #                        fixed = TRUE, top=140, right=500,
+           #                        left = "auto", width = 400,
+           #                        height = "auto",
+           #                        #verbatimTextOutput("test_panel")
+           #                        fileInput("selected_data", "Load file",
+           #                                  multiple = FALSE,
+           #                                  accept = ".tcx")
+           #          )
+           #          ),
            tabPanel("Interactive map",
                     div(class="outer",
 
