@@ -32,11 +32,12 @@ postprocess_track <- function(meta, data) {
   lap[ind] <- meta$Laps[laps]
   data <- tibble::add_column(data, Lap = lap)
 
-  # add pace, filter by limit minimums as defined in config
+  # add pace, add first element to retain length and filter by limit minimums
+  # as defined in config
   len <- length(data$Time)
   delta_mins <- difftime(data$Time[2:len], data$Time[1:len-1], units = "mins")
   delta_km <- (data$DistanceMeters[2:len]-data$DistanceMeters[1:len-1]) / 1000
-  Pace <- c(NA, delta_mins / delta_km)
+  Pace <- c(conf$runner$paceMin, delta_mins / delta_km)
   Pace[Pace > conf$runner$paceMin] <- conf$runner$paceMin
   data <- tibble::add_column(data, Pace = Pace)
 
