@@ -25,18 +25,22 @@ r_time <- function(data, t0, t1, segments) {
                           as.numeric(Time) <= as.numeric(t1))
 
   # for nicer plot:
+  # replace NA (if any) by using closest value,
   # smooth and fake altitude if obs below sealevel
-  alt <- runmed(data$AltitudeMeters, 11)
+  alt <- data$AltitudeMeters %>%
+    replace_nas() %>% runmed(11)
   data <- dplyr::mutate(data, AltitudeMeters = alt)
-  minAlt <- min(data$AltitudeMeters)
+  minAlt <- min(na.omit(data$AltitudeMeters))
   if ( minAlt < 0) {
     alt <- alt - minAlt
   }
   data <- dplyr::mutate(data, FakeAltitudeMeters = alt)
 
 
-  # smooth Pace
-  pace <- c(NA, runmed(na.omit(data$Pace), 3))
+  # smooth Pace, fake values from closest element replacing NAs
+  #pace <- c(NA, runmed(na.omit(data$Pace), 3))
+  pace <- data$Pace %>%
+    replace_nas() %>% runmed(3)
   data <- dplyr::mutate(data, Pace = pace)
 
   # get config
