@@ -175,8 +175,7 @@ function(input, output, session) {
     } else {
 
       ll <- tp_filter()
-      # first, make one lap covering all, later to be given by zoom
-      #laps <- c(min(l$data$Time), max(l$data$Time))
+      # make one lap
       laps <- c(min(ll$Time), max(ll$Time))
 
       # get distribution
