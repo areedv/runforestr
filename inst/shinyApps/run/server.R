@@ -182,7 +182,7 @@ function(input, output, session) {
       # get distribution
       id <- make_intesity_distribution(laps, ll$HeartRateBpm, ll$Time,
                                        l$zones)
-      print(id)
+
       # format mm:ss annotations
       ## converter function for seconds
       f <- function(x) {
