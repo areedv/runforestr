@@ -76,7 +76,7 @@ trackpoint_plot <- function(l) {
               hoverinfo = "text") %>%
     plotly::layout(yaxis = first_y, yaxis2 = second_y,
                    yaxis3 = third_y, legend = list(orientation = "h"),
-                   dragmode = "select") %>%
+                   dragmode = "zoom") %>%
     plotly::config(displayModeBar = "hover")
   p
 
