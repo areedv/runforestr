@@ -4,25 +4,13 @@ library(runforestr)
 
 function(input, output, session) {
 
-  # when no data
-  #t <- NULL
+  k <- r_map(t$data)
+  k <- dplyr::transmute(k, lng = LongitudeDegrees, lat = LatitudeDegrees)
 
-  # get the data
+  t0 <- min(t$data$Time)
+  t1 <- max(t$data$Time)
 
-  # reactive({
-  #   infile <- input$selected_data
-  #   t <- parse_garmin_tcx(infile$datapath)
-  # })
-
-  #if (TRUE) {
-    k <- r_map(t$data)
-    k <- dplyr::transmute(k, lng = LongitudeDegrees, lat = LatitudeDegrees)
-
-    t0 <- min(t$data$Time)
-    t1 <- max(t$data$Time)
-
-    l <- r_time(t$data, t0, t1)
-  #}
+  l <- r_time(t$data, t0, t1)
 
   # reactive trackpoint select data
   #output$test_panel <- renderText({
@@ -89,83 +77,86 @@ function(input, output, session) {
     }
   })
 
+  output$trackpoint_plot <- plotly::renderPlotly({
+
+    trackpoint_plot(l)
+
+  })
+
   output$distribution_lap_plot <- plotly::renderPlotly({
 
-    if (is.null(t)) {
-      plotly::plotly_empty()
+    ll <- tp_filter()
+
+    if (input$lap_type == "equal distance"){
+      #laps <- make_laps_distance(l$data$Time, l$data$DistanceMeters,
+      #                           convert_factor = 1000)
+      laps <- make_laps_distance(ll$Time, ll$DistanceMeters,
+                                 convert_factor = 1000)
     } else {
-
-      ll <- tp_filter()
-      if (input$lap_type == "equal distance"){
-        #laps <- make_laps_distance(l$data$Time, l$data$DistanceMeters,
-        #                           convert_factor = 1000)
-        laps <- make_laps_distance(ll$Time, ll$DistanceMeters,
-                                   convert_factor = 1000)
-      } else {
-        #laps <- t$meta$Laps
-        laps <- dplyr::distinct(ll, Lap) %>% magrittr::use_series(Lap)
-      }
-
-      id <- make_intesity_distribution(laps, ll$HeartRateBpm, ll$Time,
-                                       l$zones)
-
-      # yaxis, range also including upper and lower part of first and last bar
-      y_range <- c(max(id$lap) + 1 , 0)
-
-      # format mm:ss annotations
-      ## converter function for seconds, provde "unknown" time zone to avoid
-      ## local time being applied by strptime...
-      f <- function(x, time_format = "%M:%S") {
-        x %>% as.character() %>%
-          strptime(format = "%s", tz = "NA") %>%
-          format(time_format)
-      }
-
-      anot_pos <- id %>%
-        dplyr::group_by(lap) %>%
-        dplyr::summarise(d = sum(duration)) %>%
-        dplyr::select(d)
-      anot <- anot_pos$d %>%
-        purrr::map_chr(., f) %>%
-        as.vector()
-
-      p <- plotly::plot_ly(x = id$duration[id$iz == 0], y = id$lap[id$iz == 0],
-                           name = "I0",
-                           type = "bar", orientation = "h", hoverinfo = "text",
-                           marker = list(color = l$pzc2[1],
-                                         line = list(color = "rgb(248, 248, 249",
-                                                     width = 1)
-                           )
-      )
-
-      for (i in 1:max(id$iz)) {
-        p <- plotly::add_trace(p, x = id$duration[id$iz == i],
-                               y = id$lap[id$iz == i], name = paste0("I", i),
-                               marker = list(color = l$pzc2[i + 1])
-        )
-      }
-
-      p %>% plotly::layout(barmode = "stack", showlegend = FALSE,
-                           xaxis = list(showticklabels = FALSE, showgrid = FALSE,
-                                        zeroline = FALSE),
-                           yaxis = list(title = "", range = y_range,
-                                        showticklabels = FALSE, showgrid = FALSE,
-                                        zeroline = FALSE),
-                           margin = list(l = 10, r = 10, t = 5, b = 5, pad = 2)) %>%
-
-        add_annotations(xref = "x", yref = "y", x = 0, y = 1:length(anot),
-                        xanchor = "left", text = anot, showarrow = FALSE,
-                        font = list(size = 10)) %>%
-
-        add_annotations(xref = "x", yref = "y", x = max(anot_pos$d),
-                        y = 1:length(anot), xanchor = "right",
-                        text = as.character(1:length(anot)), showarrow = FALSE,
-                        font = list(size = 10)) %>%
-        plotly::config(displayModeBar = FALSE, displayLogo = FALSE,
-                       modeBarButtonsToRemove = list("sendDataToCloud", "zoom2d",
-                                                     "pan2d", "select2d", "select2d",
-                                                     "zoomIn2d", "zoomOut2d", "toImage"))
+      #laps <- t$meta$Laps
+      laps <- dplyr::distinct(ll, Lap) %>% magrittr::use_series(Lap)
     }
+
+    id <- make_intesity_distribution(laps, ll$HeartRateBpm, ll$Time,
+                                     l$zones)
+
+    # yaxis, range also including upper and lower part of first and last bar
+    y_range <- c(max(id$lap) + 1 , 0)
+
+    # format mm:ss annotations
+    ## converter function for seconds, provde "unknown" time zone to avoid
+    ## local time being applied by strptime...
+    f <- function(x, time_format = "%M:%S") {
+      x %>% as.character() %>%
+        strptime(format = "%s", tz = "NA") %>%
+        format(time_format)
+    }
+
+    anot_pos <- id %>%
+      dplyr::group_by(lap) %>%
+      dplyr::summarise(d = sum(duration)) %>%
+      dplyr::select(d)
+    anot <- anot_pos$d %>%
+      purrr::map_chr(., f) %>%
+      as.vector()
+
+    p <- plotly::plot_ly(x = id$duration[id$iz == 0], y = id$lap[id$iz == 0],
+                         name = "I0",
+                         type = "bar", orientation = "h", hoverinfo = "text",
+                         marker = list(color = l$pzc2[1],
+                                       line = list(color = "rgb(248, 248, 249",
+                                                   width = 1)
+                         )
+    )
+
+    for (i in 1:max(id$iz)) {
+      p <- plotly::add_trace(p, x = id$duration[id$iz == i],
+                             y = id$lap[id$iz == i], name = paste0("I", i),
+                             marker = list(color = l$pzc2[i + 1])
+      )
+    }
+
+    p %>% plotly::layout(barmode = "stack", showlegend = FALSE,
+                         xaxis = list(showticklabels = FALSE, showgrid = FALSE,
+                                      zeroline = FALSE),
+                         yaxis = list(title = "", range = y_range,
+                                      showticklabels = FALSE, showgrid = FALSE,
+                                      zeroline = FALSE),
+                         margin = list(l = 10, r = 10, t = 5, b = 5, pad = 2)) %>%
+
+      add_annotations(xref = "x", yref = "y", x = 0, y = 1:length(anot),
+                      xanchor = "left", text = anot, showarrow = FALSE,
+                      font = list(size = 10)) %>%
+
+      add_annotations(xref = "x", yref = "y", x = max(anot_pos$d),
+                      y = 1:length(anot), xanchor = "right",
+                      text = as.character(1:length(anot)), showarrow = FALSE,
+                      font = list(size = 10)) %>%
+      plotly::config(displayModeBar = FALSE, displayLogo = FALSE,
+                     modeBarButtonsToRemove = list("sendDataToCloud", "zoom2d",
+                                                   "pan2d", "select2d", "select2d",
+                                                   "zoomIn2d", "zoomOut2d", "toImage"))
+
   })
 
   output$distribution_zone_plot <- plotly::renderPlotly({
@@ -225,11 +216,5 @@ function(input, output, session) {
                         xanchor = "right", text = paste0("I", id$iz),
                         showarrow = FALSE, font = list(size = 10))
     }
-  })
-
-  output$trackpoint_plot <- plotly::renderPlotly({
-
-    trackpoint_plot(l)
-
   })
 }
