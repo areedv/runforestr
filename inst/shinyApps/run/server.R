@@ -93,8 +93,10 @@ function(input, output, session) {
       laps <- make_laps_distance(ll$Time, ll$DistanceMeters,
                                  convert_factor = 1000)
     } else {
-      #laps <- t$meta$Laps
       laps <- dplyr::distinct(ll, Lap) %>% magrittr::use_series(Lap)
+      if (length(laps) <= 1) {
+        laps <- c(min(ll$Time), max(ll$Time))
+      }
     }
 
     id <- make_intesity_distribution(laps, ll$HeartRateBpm, ll$Time,
