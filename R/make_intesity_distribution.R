@@ -20,7 +20,7 @@ make_intesity_distribution <- function(laps, pulse, time,
   }
 
   if (length(pulse) != length(time)) {
-    stop("Parameters 'tp_puls' and 'time must be of equal length")
+    stop("Parameters 'tp_puls' and 'time' must be of equal length")
   }
 
   # make intensity zone for each pulse record, include endpoint in last zone
