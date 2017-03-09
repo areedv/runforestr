@@ -5,7 +5,8 @@
 #'
 #' @param dat vector where NAs is to be replaced with value of closest element
 #'
-#' @return a vector of similar length as dat but without NAs
+#' @return a vector of similar length as dat but without NAs. If dat contains no
+#' or only NAs the input vector is returned unaltered
 #' @export
 #'
 #' @examples
