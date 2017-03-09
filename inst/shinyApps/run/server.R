@@ -7,6 +7,16 @@ function(input, output, session) {
   k <- r_map(t$data)
   k <- dplyr::transmute(k, lng = LongitudeDegrees, lat = LatitudeDegrees)
 
+  # empty position data?
+  if (length(k$lng) == length(k$lng[is.na(k$lng)]) |
+      length(k$lat) == length(k$lat[is.na(k$lat)])) {
+    contain_pos <- FALSE
+  } else {
+    contain_pos <- TRUE
+  }
+
+  print(contain_pos)
+
   t0 <- min(t$data$Time)
   t1 <- max(t$data$Time)
 
@@ -46,13 +56,18 @@ function(input, output, session) {
     k
   })
 
+  output$trackpoint_plot <- plotly::renderPlotly({
 
+    trackpoint_plot(l)
+
+  })
 
   output$map <- leaflet::renderLeaflet({
     m <- leaflet::leaflet() %>%
       leaflet::addProviderTiles("CartoDB.Positron") %>%
       leaflet::clearBounds()
-    if (!is.null(t)) {
+    # map only if position data
+    if (contain_pos) {
       m <- leaflet::addPolylines(m, k$lng, k$lat)
       # shift view se
       lngs <- m$x$limits$lng
@@ -64,23 +79,19 @@ function(input, output, session) {
   })
 
   observe({
-    marker <- th()
-    # clear all markers when empty hover data
-    if (dim(marker)[1] == 0) {
-      leaflet::leafletProxy("map", data = marker) %>%
-        leaflet::clearGroup("markers")
-    } else {
-      leaflet::leafletProxy("map", data = marker) %>%
-        leaflet::addCircleMarkers(radius = 7, weight = 1, color = "#777777",
-                                  fillColor = "#999999", fillOpacity = 0.3,
-                                  group = "markers")
+    if (contain_pos) {
+      marker <- th()
+      # clear all markers when empty hover data
+      if (dim(marker)[1] == 0) {
+        leaflet::leafletProxy("map", data = marker) %>%
+          leaflet::clearGroup("markers")
+      } else {
+        leaflet::leafletProxy("map", data = marker) %>%
+          leaflet::addCircleMarkers(radius = 7, weight = 1, color = "#777777",
+                                    fillColor = "#999999", fillOpacity = 0.3,
+                                    group = "markers")
+      }
     }
-  })
-
-  output$trackpoint_plot <- plotly::renderPlotly({
-
-    trackpoint_plot(l)
-
   })
 
   output$distribution_lap_plot <- plotly::renderPlotly({
