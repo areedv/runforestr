@@ -40,7 +40,7 @@ r_time <- function(data, t0, t1, segments) {
   # smooth Pace, fake values from closest element replacing NAs
   #pace <- c(NA, runmed(na.omit(data$Pace), 3))
   pace <- data$Pace %>%
-    replace_nas() %>% runmed(3)
+    replace_nas() %>% runmed(1)
   data <- dplyr::mutate(data, Pace = pace)
 
   # get config
