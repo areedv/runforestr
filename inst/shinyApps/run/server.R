@@ -15,8 +15,6 @@ function(input, output, session) {
     contain_pos <- TRUE
   }
 
-  print(contain_pos)
-
   t0 <- min(t$data$Time)
   t1 <- max(t$data$Time)
 
@@ -99,8 +97,6 @@ function(input, output, session) {
     ll <- tp_filter()
 
     if (input$lap_type == "equal distance"){
-      #laps <- make_laps_distance(l$data$Time, l$data$DistanceMeters,
-      #                           convert_factor = 1000)
       laps <- make_laps_distance(ll$Time, ll$DistanceMeters,
                                  convert_factor = 1000)
     } else {
@@ -164,11 +160,11 @@ function(input, output, session) {
       add_annotations(xref = "x", yref = "y", x = max(anot_pos$d),
                       y = 1:length(anot), xanchor = "right",
                       text = as.character(1:length(anot)), showarrow = FALSE,
-                      font = list(size = 10)) %>%
-      plotly::config(displayModeBar = FALSE, displayLogo = FALSE,
-                     modeBarButtonsToRemove = list("sendDataToCloud", "zoom2d",
-                                                   "pan2d", "select2d", "select2d",
-                                                   "zoomIn2d", "zoomOut2d", "toImage"))
+                      font = list(size = 10)) #%>%
+      # plotly::config(displayModeBar = FALSE, displayLogo = FALSE,
+      #                modeBarButtonsToRemove = list("sendDataToCloud", "zoom2d",
+      #                                              "pan2d", "select2d", "select2d",
+      #                                              "zoomIn2d", "zoomOut2d", "toImage"))
 
   })
 
