@@ -36,8 +36,9 @@ postprocess_track <- function(meta, data) {
   # as defined in config
   len <- length(data$Time)
   delta_mins <- difftime(data$Time[2:len], data$Time[1:len-1], units = "mins")
-  delta_km <- (data$DistanceMeters[2:len]-data$DistanceMeters[1:len-1]) / 1000
-  Pace <- c(conf$runner$paceMin, delta_mins / delta_km)
+  delta_dist <- (data$DistanceMeters[2:len]-data$DistanceMeters[1:len-1]) /
+    conf$obs$conversion$distance_denominator
+  Pace <- c(conf$runner$paceMin, delta_mins / delta_dist)
   Pace[Pace > conf$runner$paceMin] <- conf$runner$paceMin
   data <- tibble::add_column(data, Pace = Pace)
 
@@ -47,5 +48,13 @@ postprocess_track <- function(meta, data) {
     format("%M:%S")
 
   data <- tibble::add_column(data, PacePrintFormat = ppf)
+
+  # add speed, add first element (of zero velocity) to retain length
+  # also extra column for nice printing
+  delta_hours <- difftime(data$Time[2:len], data$Time[1:len-1],
+                          units = "hours")
+  Speed <- c(0, delta_dist / delta_hours)
+  data <- tibble::add_column(data, Speed = Speed,
+                             SpeedPrintFormat = round(Speed, digits = 1))
 
 }
