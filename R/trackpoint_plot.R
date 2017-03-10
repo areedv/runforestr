@@ -57,7 +57,8 @@ trackpoint_plot <- function(l) {
                       line = list(color = "rgba(0, 0 , 255, 0.7",
                                   shape = "spline",
                                   smoothig = 0),
-                      text = paste("Pace:", l$data$PacePrintFormat),
+                      text = paste("Pace:", l$data$PacePrintFormat, "Speed:",
+                                   l$data$SpeedPrintFormat),
                       hoverinfo = "text") %>%
 
     # fake time and distance to provide tooltips
