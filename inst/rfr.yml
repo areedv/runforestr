@@ -16,3 +16,11 @@ filter :
     medWindow : 11
   pace :
     medWindow : 3
+
+## Observation properties and handling
+obs :
+  units :
+    distance : m
+    altitude : m
+  conversion :
+    distance_denominator : 1000
