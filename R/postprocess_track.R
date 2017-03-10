@@ -51,8 +51,7 @@ postprocess_track <- function(meta, data) {
 
   # add speed, add first element (of zero velocity) to retain length
   # also extra column for nice printing
-  delta_hours <- difftime(data$Time[2:len], data$Time[1:len-1],
-                          units = "hours")
+  delta_hours <- as.numeric(delta_mins) / 60
   Speed <- c(0, delta_dist / delta_hours)
   data <- tibble::add_column(data, Speed = Speed,
                              SpeedPrintFormat = round(Speed, digits = 1))
