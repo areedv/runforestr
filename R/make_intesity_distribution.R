@@ -23,6 +23,9 @@ make_intesity_distribution <- function(laps, pulse, time,
     stop("Parameters 'tp_puls' and 'time' must be of equal length")
   }
 
+  # replace missing pulse observations by nearest value
+  pulse <- replace_nas(pulse)
+
   # make intensity zone for each pulse record, include endpoint in last zone
   iz <- findInterval(pulse, pulse_zones, rightmost.closed = TRUE)
 
@@ -41,5 +44,5 @@ make_intesity_distribution <- function(laps, pulse, time,
   # distribution
   id <- df %>%
     dplyr::group_by(lap, iz) %>%
-    dplyr::summarise(duration = sum(td))
+    dplyr::summarise(duration = sum(td, na.rm = TRUE))
 }
