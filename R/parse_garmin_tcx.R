@@ -15,6 +15,9 @@
 
 parse_garmin_tcx <- function(tcx_file) {
 
+  # for debugging. To be removed
+  print(paste("Start parsing tcx at", Sys.time()))
+
   # these should rather be part of some config file
   ActivityXPath <- "/d1:TrainingCenterDatabase/d1:Activities/d1:Activity"
 
@@ -46,6 +49,9 @@ parse_garmin_tcx <- function(tcx_file) {
 
   # postprocess
   data <- postprocess_track(meta = meta, data = data)
+
+  # for debugging. To be removed
+  print(paste("Stop parsing tcx at", Sys.time()))
 
   list(meta=meta, data=data)
 }
