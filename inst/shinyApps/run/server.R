@@ -55,7 +55,7 @@ function(input, output, session) {
 
   # make filtered tp data for laps and intensity distribution, depend on dat
   # and tp_selectdat
-  tp_filter <- reactive({
+  tp_filterdat <- reactive({
     dplyr::filter(dat()$data, as.numeric(Time) >= as.numeric(tp_selectdat()[1]) &
                     as.numeric(Time) <= as.numeric(tp_selectdat()[2]))
   })
@@ -66,7 +66,9 @@ function(input, output, session) {
     if (is.null(d)) -1 else as.integer(d$key[1])
   })
 
-  th <- reactive({
+  # reactive filter and select for map markers, depend on mapdat and
+  # tp_hoverdat
+  tp_markerdat <- reactive({
     d <- mapdat()
     if (is.logical(d)) {
       return(NULL)
@@ -84,7 +86,7 @@ function(input, output, session) {
   observe({
     d <- mapdat()
     if (!is.logical(d)) {
-      marker <- th()
+      marker <- tp_markerdat()
       # clear all markers when empty hover data
       if (dim(marker)[1] == 0) {
         leaflet::leafletProxy("map", data = marker) %>%
@@ -251,7 +253,7 @@ function(input, output, session) {
   #
   output$distribution_lap_plot <- plotly::renderPlotly({
 
-    d <- tp_filter()
+    d <- tp_filterdat()
     l <- tpdat()
 
     if (input$lap_type == "equal distance"){
@@ -318,72 +320,67 @@ function(input, output, session) {
       add_annotations(xref = "x", yref = "y", x = max(anot_pos$d),
                       y = 1:length(anot), xanchor = "right",
                       text = as.character(1:length(anot)), showarrow = FALSE,
-                      font = list(size = 10)) #%>%
-      # plotly::config(displayModeBar = FALSE, displayLogo = FALSE,
-      #                modeBarButtonsToRemove = list("sendDataToCloud", "zoom2d",
-      #                                              "pan2d", "select2d", "select2d",
-      #                                              "zoomIn2d", "zoomOut2d", "toImage"))
+                      font = list(size = 10)) %>%
+      plotly::config(displayModeBar = FALSE, displayLogo = FALSE,
+                     modeBarButtonsToRemove = list("sendDataToCloud", "zoom2d",
+                                                   "pan2d", "select2d", "select2d",
+                                                   "zoomIn2d", "zoomOut2d", "toImage"))
 
   })
 
   output$distribution_zone_plot <- plotly::renderPlotly({
 
-    # if (is.null(t)) {
-    #   plotly::plotly_empty()
-    # } else {
+    d <- tp_filterdat()
+    l <- tpdat()
 
-      d <- tp_filter()
-      l <- tpdat()
+    # make one lap
+    laps <- c(min(d$Time), max(d$Time))
 
-      # make one lap
-      laps <- c(min(d$Time), max(d$Time))
+    # get distribution
+    id <- make_intesity_distribution(laps, d$HeartRateBpm, d$Time,
+                                     l$zones)
 
-      # get distribution
-      id <- make_intesity_distribution(laps, d$HeartRateBpm, d$Time,
-                                       l$zones)
+    # format mm:ss annotations
+    ## converter function for seconds
+    f <- function(x) {
+      x %>% as.character() %>%
+        strptime(format = "%s", tz = "NA") %>%
+        format("%H:%M:%S")
+    }
 
-      # format mm:ss annotations
-      ## converter function for seconds
-      f <- function(x) {
-        x %>% as.character() %>%
-          strptime(format = "%s", tz = "NA") %>%
-          format("%H:%M:%S")
-      }
+    anot_pos <- id$duration
+    anot <- id$duration %>%
+      purrr::map_chr(., f) %>%
+      as.vector()
 
-      anot_pos <- id$duration
-      anot <- id$duration %>%
-        purrr::map_chr(., f) %>%
-        as.vector()
+    # make indices for color vector corresponding to intensity zones
+    # represented
+    color_low <- min(id$iz) + 1
+    color_high <- max(id$iz) + 1
 
-      # make indices for color vector corresponding to intensity zones
-      # represented
-      color_low <- min(id$iz) + 1
-      color_high <- max(id$iz) + 1
+    p <- plotly::plot_ly(x = anot_pos, y = id$iz,
+                         #y = ~ y_vals,
+                         type = "bar",
+                         orientation = "h",
+                         hoverinfo = "text",
+                         marker = list(color=l$pzc2[color_low:color_high]),
+                         width = 200, height = 100)
 
-      p <- plotly::plot_ly(x = anot_pos, y = id$iz,
-                           #y = ~ y_vals,
-                           type = "bar",
-                           orientation = "h",
-                           hoverinfo = "text",
-                           marker = list(color=l$pzc2[color_low:color_high]),
-                           width = 200, height = 100)
-
-      p %>% plotly::layout(showlegend = FALSE,
-                           xaxis = list(showticklabels = FALSE,
-                                        showgrid = FALSE,
-                                        zeroline = FALSE),
-                           yaxis = list(title = "",
-                                        showticklabels = FALSE,
-                                        showgrid = FALSE,
-                                        zeroline = FALSE),
-                           margin = list(l = 10, r = 10, t = 5, b = 5, pad = 2),
-                           autosize = FALSE) %>%
-        add_annotations(xref = "x", yref = "y", x = anot_pos, y = id$iz,
-                        xanchor = "left", text = anot, showarrow = FALSE,
-                        font = list(size = 10)) %>%
-        add_annotations(xref = "x", yref = "y", x = 0, y = id$iz,
-                        xanchor = "right", text = paste0("I", id$iz),
-                        showarrow = FALSE, font = list(size = 10))
-    # }
+    p %>% plotly::layout(showlegend = FALSE,
+                         xaxis = list(showticklabels = FALSE,
+                                      showgrid = FALSE,
+                                      zeroline = FALSE),
+                         yaxis = list(title = "",
+                                      showticklabels = FALSE,
+                                      showgrid = FALSE,
+                                      zeroline = FALSE),
+                         margin = list(l = 10, r = 10, t = 5, b = 5, pad = 2),
+                         autosize = FALSE) %>%
+      add_annotations(xref = "x", yref = "y", x = anot_pos, y = id$iz,
+                      xanchor = "left", text = anot, showarrow = FALSE,
+                      font = list(size = 10)) %>%
+      add_annotations(xref = "x", yref = "y", x = 0, y = id$iz,
+                      xanchor = "right", text = paste0("I", id$iz),
+                      showarrow = FALSE, font = list(size = 10))
   })
 }
