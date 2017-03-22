@@ -48,7 +48,8 @@ parse_garmin_tcx_trackpoint <- function(tcx_nodeset, ns) {
   HeartRateBpm <- tp %>%
     xml2::xml_find_all(TrackpointXPath, ns) %>%
     xml2::xml_find_first(HeartRateBpmXPath, ns) %>%
-    xml2::xml_integer()
+    xml2::xml_text() %>%
+    as.integer()
 
   tibble::tibble(Time = Time, LatitudeDegrees = LatitudeDegrees,
                  LongitudeDegrees = LongitudeDegrees,
