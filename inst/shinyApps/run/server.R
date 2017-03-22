@@ -56,8 +56,9 @@ function(input, output, session) {
   # make filtered tp data for laps and intensity distribution, depend on dat
   # and tp_selectdat
   tp_filterdat <- reactive({
-    dplyr::filter(dat()$data, as.numeric(Time) >= as.numeric(tp_selectdat()[1]) &
-                    as.numeric(Time) <= as.numeric(tp_selectdat()[2]))
+    d <- tp_selectdat()
+    dplyr::filter(dat()$data, as.numeric(Time) >= as.numeric(d[1]) &
+                    as.numeric(Time) <= as.numeric(d[2]))
   })
 
   # reactive trackpoint hover data, depend on event data from trackpoint plot
