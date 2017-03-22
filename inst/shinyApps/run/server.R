@@ -100,6 +100,7 @@ function(input, output, session) {
     }
   })
 
+
   # outputs
   output$trackpoint_plot <- plotly::renderPlotly({
     trackpoint_plot(tpdat())
@@ -122,135 +123,6 @@ function(input, output, session) {
     m
   })
 
-  # observeEvent(input$selected_data, {
-  #   inFile <- input$selected_data
-  #   #if (is.null(inFile)) {
-  #   #  return(NULL)
-  #   #  print("no file")
-  #   #}
-  #   print(paste("Selected file:", inFile$datapath, inFile$name))
-  #   dat <- parse_garmin_tcx(inFile$datapath)
-  #   print("do we have dat?")
-  # })
-  #
-  #
-  # dat <- eventReactive(input$selected_data, {
-  #   print("parsing data")
-  #   inFile <- input$selected_data
-  #   parse_garmin_tcx(inFile$datapath)
-  #   #print("Calling module 'interactiveMap'")
-  #   #callModule(interactiveMap, "interactiveMap", t=dat())
-  # })
-  #
-  # # if (!is.null(dat())) {
-  # #   print("data is populated")
-  # # }
-  #
-  #
-
-
-  # observe({
-  #   print("observing...")
-  #   print("Calling module 'interactiveMap'")
-  #   callModule(interactiveMap, "interactiveMap", t=dat())
-  #   print("Module 'interactiveMap' was called")
-  # })
-
-  # output$renderInteractiveMap <- renderUI({
-  #   print("Do render UI?")
-  #   callModule(interactiveMap, "interactiveMap", t=dat())
-  #   interactiveMapInput("interactiveMap", dat())
-  # })
-
-
-  # k <- r_map(t$data)
-  # k <- dplyr::transmute(k, lng = LongitudeDegrees, lat = LatitudeDegrees)
-  #
-  # # empty position data?
-  # if (length(k$lng) == length(k$lng[is.na(k$lng)]) |
-  #     length(k$lat) == length(k$lat[is.na(k$lat)])) {
-  #   contain_pos <- FALSE
-  # } else {
-  #   contain_pos <- TRUE
-  # }
-  #
-  # t0 <- min(t$data$Time)
-  # t1 <- max(t$data$Time)
-  #
-  # l <- r_time(t$data, t0, t1)
-  #
-  # # reactive trackpoint select data
-  # #output$test_panel <- renderText({
-  # sk <- reactive({
-  #   sk <- plotly::event_data("plotly_relayout", source = "trackpoint")
-  #   # value 0 is at the start of the epoch which will be returned when
-  #   # resetting plot
-  #   if (is.null(sk)) {
-  #     c(t0, t1)
-  #   } else if (sk[1] == "TRUE") {
-  #     c(t0, t1)
-  #   } else {
-  #     c(as.numeric(sk[1])/1000, as.numeric(sk[2])/1000)
-  #   }
-  # })
-  #
-  # # make filtered tp data for laps and intensity distribution
-  # tp_filter <- reactive({
-  #   dplyr::filter(l$data, as.numeric(Time) >= as.numeric(sk()[1]) &
-  #                   as.numeric(Time) <= as.numeric(sk()[2]))
-  # })
-  #
-  # # reactive trackpoint hover data
-  # hk <- reactive({
-  #   d <- plotly::event_data("plotly_hover", source = "trackpoint")
-  #   if (is.null(d)) -1 else as.integer(d$key[1])
-  # })
-  #
-  # th <- reactive({
-  #   k <- dplyr::mutate(k, key = as.integer(row.names(k)))
-  #   k <- dplyr::filter(k, key == hk())
-  #   k <- dplyr::select(k, lng, lat)
-  #   k
-  # })
-  #
-  # output$trackpoint_plot <- plotly::renderPlotly({
-  #
-  #   trackpoint_plot(l)
-  #
-  # })
-  #
-  # output$map <- leaflet::renderLeaflet({
-  #   m <- leaflet::leaflet() %>%
-  #     leaflet::addProviderTiles("CartoDB.Positron") %>%
-  #     leaflet::clearBounds()
-  #   # map only if position data
-  #   if (contain_pos) {
-  #     m <- leaflet::addPolylines(m, k$lng, k$lat)
-  #     # shift view se
-  #     lngs <- m$x$limits$lng
-  #     lats <- m$x$limits$lat
-  #     m <- leaflet::fitBounds(m, lng1 = lngs[1], lat1 = lats[1] - diff(lats),
-  #                             lng2 = lngs[2] + diff(lngs), lat2 = lats[2])
-  #   }
-  #   m
-  # })
-  #
-  # observe({
-  #   if (contain_pos) {
-  #     marker <- th()
-  #     # clear all markers when empty hover data
-  #     if (dim(marker)[1] == 0) {
-  #       leaflet::leafletProxy("map", data = marker) %>%
-  #         leaflet::clearGroup("markers")
-  #     } else {
-  #       leaflet::leafletProxy("map", data = marker) %>%
-  #         leaflet::addCircleMarkers(radius = 7, weight = 1, color = "#777777",
-  #                                   fillColor = "#999999", fillOpacity = 0.3,
-  #                                   group = "markers")
-  #     }
-  #   }
-  # })
-  #
   output$distribution_lap_plot <- plotly::renderPlotly({
 
     d <- tp_filterdat()
