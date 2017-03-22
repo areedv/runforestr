@@ -41,8 +41,8 @@ parse_garmin_tcx <- function(tcx_file) {
       meta <- parse_garmin_tcx_metadata(sub_doc, ns)
       data <- parse_garmin_tcx_trackpoint(sub_doc, ns)
     } else {
-      meta <- cbind(parse_garmin_tcx_metadata(sub_doc, ns))
-      data <- cbind(parse_garmin_tcx_trackpoint(sub_doc, ns))
+      meta <- cbind(parse_garmin_tcx_metadata(sub_doc, ns), meta)
+      data <- cbind(parse_garmin_tcx_trackpoint(sub_doc, ns), data)
 
     }
   }
