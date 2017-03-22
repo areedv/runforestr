@@ -112,9 +112,9 @@ function(input, output, session) {
       leaflet::addProviderTiles("CartoDB.Positron") %>%
       leaflet::clearBounds()
     # map only if position data
-    dat <- mapdat()
-    if (!is.logical(dat)) {
-      m <- leaflet::addPolylines(m, dat$lng, dat$lat)
+    d <- mapdat()
+    if (!is.logical(d)) {
+      m <- leaflet::addPolylines(m, d$lng, d$lat)
       # shift view se
       lngs <- m$x$limits$lng
       lats <- m$x$limits$lat
