@@ -325,63 +325,65 @@ function(input, output, session) {
       #                                              "zoomIn2d", "zoomOut2d", "toImage"))
 
   })
-  #
-  # output$distribution_zone_plot <- plotly::renderPlotly({
-  #
-  #   if (is.null(t)) {
-  #     plotly::plotly_empty()
-  #   } else {
-  #
-  #     ll <- tp_filter()
-  #     # make one lap
-  #     laps <- c(min(ll$Time), max(ll$Time))
-  #
-  #     # get distribution
-  #     id <- make_intesity_distribution(laps, ll$HeartRateBpm, ll$Time,
-  #                                      l$zones)
-  #
-  #     # format mm:ss annotations
-  #     ## converter function for seconds
-  #     f <- function(x) {
-  #       x %>% as.character() %>%
-  #         strptime(format = "%s", tz = "NA") %>%
-  #         format("%H:%M:%S")
-  #     }
-  #
-  #     anot_pos <- id$duration
-  #     anot <- id$duration %>%
-  #       purrr::map_chr(., f) %>%
-  #       as.vector()
-  #
-  #     # make indices for color vector corresponding to intensity zones
-  #     # represented
-  #     color_low <- min(id$iz) + 1
-  #     color_high <- max(id$iz) + 1
-  #
-  #     p <- plotly::plot_ly(x = anot_pos, y = id$iz,
-  #                          #y = ~ y_vals,
-  #                          type = "bar",
-  #                          orientation = "h",
-  #                          hoverinfo = "text",
-  #                          marker = list(color=l$pzc2[color_low:color_high]),
-  #                          width = 200, height = 100)
-  #
-  #     p %>% plotly::layout(showlegend = FALSE,
-  #                          xaxis = list(showticklabels = FALSE,
-  #                                       showgrid = FALSE,
-  #                                       zeroline = FALSE),
-  #                          yaxis = list(title = "",
-  #                                       showticklabels = FALSE,
-  #                                       showgrid = FALSE,
-  #                                       zeroline = FALSE),
-  #                          margin = list(l = 10, r = 10, t = 5, b = 5, pad = 2),
-  #                          autosize = FALSE) %>%
-  #       add_annotations(xref = "x", yref = "y", x = anot_pos, y = id$iz,
-  #                       xanchor = "left", text = anot, showarrow = FALSE,
-  #                       font = list(size = 10)) %>%
-  #       add_annotations(xref = "x", yref = "y", x = 0, y = id$iz,
-  #                       xanchor = "right", text = paste0("I", id$iz),
-  #                       showarrow = FALSE, font = list(size = 10))
-  #   }
-  # })
+
+  output$distribution_zone_plot <- plotly::renderPlotly({
+
+    # if (is.null(t)) {
+    #   plotly::plotly_empty()
+    # } else {
+
+      d <- tp_filter()
+      l <- tpdat()
+
+      # make one lap
+      laps <- c(min(d$Time), max(d$Time))
+
+      # get distribution
+      id <- make_intesity_distribution(laps, d$HeartRateBpm, d$Time,
+                                       l$zones)
+
+      # format mm:ss annotations
+      ## converter function for seconds
+      f <- function(x) {
+        x %>% as.character() %>%
+          strptime(format = "%s", tz = "NA") %>%
+          format("%H:%M:%S")
+      }
+
+      anot_pos <- id$duration
+      anot <- id$duration %>%
+        purrr::map_chr(., f) %>%
+        as.vector()
+
+      # make indices for color vector corresponding to intensity zones
+      # represented
+      color_low <- min(id$iz) + 1
+      color_high <- max(id$iz) + 1
+
+      p <- plotly::plot_ly(x = anot_pos, y = id$iz,
+                           #y = ~ y_vals,
+                           type = "bar",
+                           orientation = "h",
+                           hoverinfo = "text",
+                           marker = list(color=l$pzc2[color_low:color_high]),
+                           width = 200, height = 100)
+
+      p %>% plotly::layout(showlegend = FALSE,
+                           xaxis = list(showticklabels = FALSE,
+                                        showgrid = FALSE,
+                                        zeroline = FALSE),
+                           yaxis = list(title = "",
+                                        showticklabels = FALSE,
+                                        showgrid = FALSE,
+                                        zeroline = FALSE),
+                           margin = list(l = 10, r = 10, t = 5, b = 5, pad = 2),
+                           autosize = FALSE) %>%
+        add_annotations(xref = "x", yref = "y", x = anot_pos, y = id$iz,
+                        xanchor = "left", text = anot, showarrow = FALSE,
+                        font = list(size = 10)) %>%
+        add_annotations(xref = "x", yref = "y", x = 0, y = id$iz,
+                        xanchor = "right", text = paste0("I", id$iz),
+                        showarrow = FALSE, font = list(size = 10))
+    # }
+  })
 }
