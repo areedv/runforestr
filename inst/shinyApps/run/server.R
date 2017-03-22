@@ -64,7 +64,7 @@ function(input, output, session) {
   # reactive trackpoint hover data, depend on event data from trackpoint plot
   tp_hoverdat <- reactive({
     d <- plotly::event_data("plotly_hover", source = "trackpoint")
-    if (is.null(d)) -1 else as.integer(d$key[1])
+    if (is.null(d)) 0 else as.integer(d$key[1])
   })
 
   # reactive filter and select for map markers, depend on mapdat and
