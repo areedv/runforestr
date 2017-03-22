@@ -11,10 +11,6 @@ navbarPage("Run Forest. Run!", id="run",
                                             accept = c("text/xml", ".tcx"))
                     )
                     ),
-           #uiOutput("renderInteractiveMap")
-           # if (1==1) {
-           #  interactiveMapInput("interactiveMap")
-           # }
            tabPanel("Interactive map",
                     div(class="outer",
 
