@@ -4,22 +4,42 @@ library(runforestr)
 
 function(input, output, session) {
 
-  # chain of reactives
+  # chain of data reactives
+  # main data as loaded from tcx, other sources such as stored data should be
+  # handled here too
   dat <- reactive({
     req(input$selected_data)
     parse_garmin_tcx(input$selected_data$datapath)
   })
 
+  # trackpoint data depend on dat
+  tpdat <- reactive({
+    d <- dat()
+    t0 <- min(d$data$Time)
+    t1 <- max(d$data$Time)
+    r_time(d$data, t0, t1)
+  })
+
+  # map data depend on dat
   mapdat <- reactive({
-    dat <- r_map(dat()$data) %>%
+    d <- r_map(dat()$data) %>%
       dplyr::transmute(lng = LongitudeDegrees, lat = LatitudeDegrees)
     # empty position data?
-    if (length(dat$lng) == length(dat$lng[is.na(dat$lng)]) |
-        length(dat$lat) == length(dat$lat[is.na(dat$lat)])) {
+    if (length(d$lng) == length(d$lng[is.na(d$lng)]) |
+        length(d$lat) == length(d$lat[is.na(d$lat)])) {
       return(FALSE)
     } else {
-      return(dat)
+      return(d)
     }
+  })
+
+  # end chain of reactive data
+
+
+
+  # outputs
+  output$trackpoint_plot <- plotly::renderPlotly({
+    trackpoint_plot(tpdat())
   })
 
   output$map <- leaflet::renderLeaflet({
@@ -66,12 +86,12 @@ function(input, output, session) {
   #
 
 
-  observe({
-    print("observing...")
-    print("Calling module 'interactiveMap'")
-    callModule(interactiveMap, "interactiveMap", t=dat())
-    print("Module 'interactiveMap' was called")
-  })
+  # observe({
+  #   print("observing...")
+  #   print("Calling module 'interactiveMap'")
+  #   callModule(interactiveMap, "interactiveMap", t=dat())
+  #   print("Module 'interactiveMap' was called")
+  # })
 
   # output$renderInteractiveMap <- renderUI({
   #   print("Do render UI?")
