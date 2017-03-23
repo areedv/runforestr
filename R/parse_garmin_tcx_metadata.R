@@ -19,7 +19,6 @@ parse_garmin_tcx_metadata <- function(tcx_nodeset, ns) {
 
   date_time_format <- "%FT%X" #2017-02-02T16:01:09.000Z
 
-  IdXPath <- "//d1:Id"
   LapStartTimeXPath <- "//d1:Lap/@StartTime"
   TotalTimeSecondsXPath <- "//d1:Lap/d1:TotalTimeSeconds"
   DistanceMetersXPath <- "//d1:Lap/d1:DistanceMeters"
@@ -29,14 +28,6 @@ parse_garmin_tcx_metadata <- function(tcx_nodeset, ns) {
   MaximumHeartRateBpmXPath <- "//d1:Lap/d1:MaximumHeartRateBpm/d1:Value"
   IntensityXPath <- "//d1:Lap/d1:Intensity"
   TriggerMethodXPath <- "//d1:Lap/d1:TriggerMethod"
-
-
-  # use hash of Activity Id as unique identifier
-  ActivityId <- tcx_nodeset %>%
-    #xml2::xml_find_all(ActivityXPath, ns) %>%
-    xml2::xml_find_first(IdXPath, ns) %>%
-    xml2::xml_text() %>%
-    digest::digest(algo = "md5", serialize = FALSE)
 
   # identify activity, assume start time, always UTC(?)
   Laps <- tcx_nodeset %>%
