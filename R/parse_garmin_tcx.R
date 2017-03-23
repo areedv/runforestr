@@ -20,9 +20,18 @@ parse_garmin_tcx <- function(tcx_file) {
 
   # these should rather be part of some config file
   ActivityXPath <- "/d1:TrainingCenterDatabase/d1:Activities/d1:Activity"
+  #ActivityXPath <- "/d1:TrainingCenterDatabase/d1:Activities"
+  print(ActivityXPath)
 
   doc <- xml2::read_xml(tcx_file)
   ns <- xml2::xml_ns(doc)
+
+  # test of sports
+  Sport <- doc %>%
+    xml2::xml_find_all(paste0(ActivityXPath, "/@Sport"), ns) %>%
+    xml2::xml_text()
+
+  print(paste("Sport:", Sport))
 
   # how many activities?
   n <- doc %>%
