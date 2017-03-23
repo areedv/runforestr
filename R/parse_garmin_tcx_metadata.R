@@ -19,7 +19,6 @@ parse_garmin_tcx_metadata <- function(tcx_nodeset, ns) {
 
   date_time_format <- "%FT%X" #2017-02-02T16:01:09.000Z
 
-  #ActivityXPath <- "/"
   IdXPath <- "//d1:Id"
   LapStartTimeXPath <- "//d1:Lap/@StartTime"
   TotalTimeSecondsXPath <- "//d1:Lap/d1:TotalTimeSeconds"
