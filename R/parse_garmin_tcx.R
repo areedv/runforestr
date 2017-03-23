@@ -58,5 +58,6 @@ parse_garmin_tcx <- function(tcx_file) {
   # for debugging. To be removed
   print(paste("Stop parsing tcx at", Sys.time()))
 
-  list(md5sum=md5sum, acti=acti, meta=meta, data=data)
+  list(filename=basename(tcx_file), md5sum=md5sum, acti=acti, meta=meta,
+       data=data)
 }
