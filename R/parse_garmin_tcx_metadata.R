@@ -73,7 +73,6 @@ parse_garmin_tcx_metadata <- function(tcx_nodeset, ns) {
                  MaximumSpeed = MaximumSpeed, Calories = Calories,
                  AverageHeartRateBpm = AverageHeartRateBpm,
                  MaximumHeartRateBpm = MaximumHeartRateBpm,
-                 Intensity = Intensity, TriggerMethod = TriggerMethod,
-                 ActivityId = ActivityId)
+                 Intensity = Intensity, TriggerMethod = TriggerMethod)
 
 }
