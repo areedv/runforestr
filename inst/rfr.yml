@@ -24,3 +24,11 @@ obs :
     altitude : m
   conversion :
     distance_denominator : 1000
+
+## Data persistence
+store :
+  dir : runforestr
+  local :
+    path : ~/Desktop
+  remote :
+    path : runforestr
