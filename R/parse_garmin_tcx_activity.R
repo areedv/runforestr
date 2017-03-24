@@ -21,7 +21,7 @@ parse_garmin_tcx_activity <- function(tcx_nodeset, ns) {
     xml2::xml_find_first(ActivityIdXPath, ns) %>%
     xml2::xml_text()
 
-  DateTime <- Id %>%
+  DateTime <- ActivityId %>%
     strptime(., date_time_format, tz = "GMT") %>%
     as.POSIXct()
 
