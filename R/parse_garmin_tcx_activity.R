@@ -17,7 +17,7 @@ parse_garmin_tcx_activity <- function(tcx_nodeset, ns) {
 
   date_time_format <- "%FT%X" #2017-02-02T16:01:09.000Z
 
-  Id <- tcx_nodeset %>%
+  ActivityId <- tcx_nodeset %>%
     xml2::xml_find_first(ActivityIdXPath, ns) %>%
     xml2::xml_text()
 
@@ -37,6 +37,6 @@ parse_garmin_tcx_activity <- function(tcx_nodeset, ns) {
     xml2::xml_find_first(DeviceNameXPath, ns) %>%
     xml2::xml_text()
 
-  tibble::tibble(Id = Id, Sport = Sport, DateTime = DateTime,
+  tibble::tibble(ActivityId = ActivityId, Sport = Sport, DateTime = DateTime,
                  DeviceId = DeviceId, DeviceName = DeviceName)
 }
