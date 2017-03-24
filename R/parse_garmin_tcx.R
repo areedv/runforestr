@@ -59,9 +59,9 @@ parse_garmin_tcx <- function(tcx_file) {
   # for debugging. To be removed
   print(paste("Stop parsing tcx at", Sys.time()))
 
-  # list(filename=basename(tcx_file), md5sum=md5sum, acti=acti, meta=meta,
-  #     data=data)
-  tibble::tibble(filename=basename(tcx_file), md5sum=md5sum,
-                 acti=list(acti),
-                 meta=list(meta), data=list(data))
+  list(filename=basename(tcx_file), md5sum=md5sum, acti=acti, meta=meta,
+      data=data)
+  # tibble::tibble(filename=basename(tcx_file), md5sum=md5sum,
+  #                acti=list(acti),
+  #                meta=list(meta), data=list(data))
 }
