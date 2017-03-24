@@ -19,6 +19,7 @@ parse_garmin_tcx_metadata <- function(tcx_nodeset, ns) {
 
   date_time_format <- "%FT%X" #2017-02-02T16:01:09.000Z
 
+  ActivityIdXPath <- "//d1:Id"
   LapStartTimeXPath <- "//d1:Lap/@StartTime"
   TotalTimeSecondsXPath <- "//d1:Lap/d1:TotalTimeSeconds"
   DistanceMetersXPath <- "//d1:Lap/d1:DistanceMeters"
@@ -28,6 +29,11 @@ parse_garmin_tcx_metadata <- function(tcx_nodeset, ns) {
   MaximumHeartRateBpmXPath <- "//d1:Lap/d1:MaximumHeartRateBpm/d1:Value"
   IntensityXPath <- "//d1:Lap/d1:Intensity"
   TriggerMethodXPath <- "//d1:Lap/d1:TriggerMethod"
+
+  # use ActivityId as identifier of activity
+  ActivityId <- tcx_nodeset %>%
+    xml2::xml_find_first(ActivityIdXPath, ns) %>%
+    xml2::xml_text()
 
   # identify activity, assume start time, always UTC(?)
   Laps <- tcx_nodeset %>%
@@ -68,7 +74,8 @@ parse_garmin_tcx_metadata <- function(tcx_nodeset, ns) {
     xml2::xml_find_all(TriggerMethodXPath, ns) %>%
     xml2::xml_text()
 
-  tibble::tibble(Laps = Laps, TotalTimeSeconds = TotalTimeSeconds,
+  tibble::tibble(ActivityId = ActivityId,
+                 Laps = Laps, TotalTimeSeconds = TotalTimeSeconds,
                  DistanceMeters = DistanceMeters,
                  MaximumSpeed = MaximumSpeed, Calories = Calories,
                  AverageHeartRateBpm = AverageHeartRateBpm,
