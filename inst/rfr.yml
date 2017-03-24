@@ -28,7 +28,8 @@ obs :
 ## Data persistence
 store :
   dir : runforestr
+  filename : rfrData
   local :
-    path : ~/Desktop
+    path : ~/Desktop/
   remote :
     path : runforestr
