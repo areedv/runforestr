@@ -10,6 +10,7 @@ parse_garmin_tcx_trackpoint <- function(tcx_nodeset, ns) {
   tp <- tcx_nodeset %>%
     xml2::xml_find_all(TrackpointXPath, ns)
 
+  ActivityIdXPath <- "//d1:Id"
   TimeXPath <- "d1:Trackpoint/d1:Time"
   TrackpointXPath <- "d1:Trackpoint"
   LatitudeDegreesXPath <- "d1:Position/d1:LatitudeDegrees"
@@ -17,6 +18,11 @@ parse_garmin_tcx_trackpoint <- function(tcx_nodeset, ns) {
   AltitudeMetersXPath <- "d1:AltitudeMeters"
   DistanceMetersXPath <- "d1:DistanceMeters"
   HeartRateBpmXPath <- "d1:HeartRateBpm/d1:Value"
+
+  # use ActivityId as identifier of activity
+  ActivityId <- tcx_nodeset %>%
+    xml2::xml_find_first(ActivityIdXPath, ns) %>%
+    xml2::xml_text()
 
   # assume a Time node for every record, always UTC (?)
   Time <- xml2::xml_find_all(tp, TimeXPath, ns) %>%
@@ -51,7 +57,8 @@ parse_garmin_tcx_trackpoint <- function(tcx_nodeset, ns) {
     xml2::xml_text() %>%
     as.integer()
 
-  tibble::tibble(Time = Time, LatitudeDegrees = LatitudeDegrees,
+  tibble::tibble(ActivityId = ActivityId,
+                 Time = Time, LatitudeDegrees = LatitudeDegrees,
                  LongitudeDegrees = LongitudeDegrees,
                  AltitudeMeters = AltitudeMeters,
                  DistanceMeters = DistanceMeters,
