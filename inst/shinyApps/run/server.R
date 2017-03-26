@@ -2,14 +2,50 @@ library(magrittr)
 library(plotly)
 library(runforestr)
 
-function(input, output, session) {
+# get config
+if (!exists("conf")) {
+  conf <- yaml::yaml.load_file(system.file("rfr.yml", package = "runforestr"))
+}
+
+# load data if defined
+if (conf$store$use) {
+  data <- load_activity()
+}
+
+shinyServer(function(input, output, session) {
+
+  # when import requested
+  import <- reactive({
+    req(input$import_data)
+    d <- parse_garmin_tcx(input$import_data$datapath)
+    save_activity(d)
+  })
 
   # chain of data reactives
-  # main data as loaded from tcx, other sources such as stored data should be
-  # handled here too
+
+  # all data in store, if any
+  alldat <- reactive({
+    if (file.exists(paste0(conf$store$local$path, conf$store$filename))) {
+      load_activity()
+    } else {
+      req(FALSE)
+    }
+  })
+
+  # main data as loaded from file or selected from store
   dat <- reactive({
-    req(input$selected_data)
-    parse_garmin_tcx(input$selected_data$datapath)
+    if (conf$store$use) {
+      print(input$select_data)
+      d <- alldat()
+      get_activity(data = d, id = input$select_data)
+    } else {
+      req(input$import_data)
+      d <- parse_garmin_tcx(input$import_data$datapath)
+      if (conf$store$use) {
+        save_activity(d)
+      }
+      d
+    }
   })
 
   # trackpoint data depend on dat
@@ -101,8 +137,24 @@ function(input, output, session) {
     }
   })
 
+  observe(import())
+
+  observe(alldat())
+
 
   # outputs
+
+  # ui for selecting data
+  output$selectData <- renderUI({
+    d <- alldat()
+    selectInput(inputId = "select_data",
+                label = "Select data",
+                choices = setNames(d$acti$ActivityId,
+                                   paste(format(d$acti$DateTime,
+                                          "%a %d. %b %Y"), d$acti$Sport)),
+                multiple = TRUE)
+  })
+
   output$trackpoint_plot <- plotly::renderPlotly({
     trackpoint_plot(tpdat())
   })
@@ -256,4 +308,4 @@ function(input, output, session) {
                       xanchor = "right", text = paste0("I", id$iz),
                       showarrow = FALSE, font = list(size = 10))
   })
-}
+})
