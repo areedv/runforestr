@@ -27,6 +27,7 @@ obs :
 
 ## Data persistence
 store :
+  use : TRUE
   dir : runforestr
   filename : rfrData
   local :
