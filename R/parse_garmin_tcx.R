@@ -54,7 +54,6 @@ parse_garmin_tcx <- function(tcx_file) {
   data <- postprocess_track(meta = meta, data = data)
 
   # make checksum on tcx_file
-  #md5sum <- digest::digest(tcx_file, algo = "md5", serialize = FALSE)
   md5sum <- tools::md5sum(tcx_file)
 
   # for debugging. To be removed
