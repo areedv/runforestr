@@ -9,6 +9,8 @@ runner :
   intesityZoneModel : max_pulse
   paceMin : 10
   paceMax : 0
+  # for visual purposes
+  altitudeMax : 2000
 
 ## Filters (and smoothing)
 filter :
