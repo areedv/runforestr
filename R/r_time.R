@@ -11,6 +11,8 @@
 #' @examples
 r_time <- function(data, t0, t1, segments) {
 
+  conf <- yaml::yaml.load_file(system.file("rfr.yml", package = "runforestr"))
+
   # prepare for reactive data
   if(missing(t0)) {
     t0 <- min(data$Time)
@@ -52,10 +54,16 @@ r_time <- function(data, t0, t1, segments) {
   ## pulse
   y1 <- c(conf$runner$pulseRest, conf$runner$pulseMax)
 
-  # elevation
-  y2 <- c(min(data$FakeAltitudeMeters), max(data$FakeAltitudeMeters) * 2)
+  ## elevation
+  alt_max <- max(data$FakeAltitudeMeters)
+  ### for visual purposes, adjust according to runners max altitude
+  global_alt_max <- conf$runner$altitudeMax
+  alt_max <- global_alt_max * sqrt(alt_max / global_alt_max)
+  ### max altitude never to exceed lower half of plot
+  alt_max <- alt_max * 2
+  y2 <- c(min(data$FakeAltitudeMeters), alt_max)
 
-  # pace
+  ## pace
   y3 <- c(conf$runner$paceMin, conf$runner$paceMax * 1.1)
 
 
