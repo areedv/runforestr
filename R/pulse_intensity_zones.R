@@ -17,11 +17,11 @@
 #' @examples
 
 pulse_intesity_zones <- function(pulseRest, pulseMax, relativeIntesities,
-                                 model = "max_pulse") {
+                                 model = "maxPulse") {
 
-  if (model == "max_pulse") {
+  if (model == "maxPulse") {
     zones <- round(relativeIntesities * pulseMax, digits = 0)
-  } else if (model == "heart_rate_reserve") {
+  } else if (model == "heartRateReserve") {
     reserve <- pulseMax - pulseRest
     zones <- round(relativeIntesities * reserve + pulseRest, digits = 0)
   } else {

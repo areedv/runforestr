@@ -6,7 +6,7 @@ runner :
   pulseMax : 170
   intensityZones : !expr c(.6, .72, .82, .87, .92, .97)
   # Model intensity zones according to 'maxPulse' or 'heartRateReserve'
-  intesityZoneModel : max_pulse
+  intesityZoneModel : maxPulse
   paceMin : 10
   paceMax : 0
   # for visual purposes
