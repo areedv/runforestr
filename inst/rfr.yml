@@ -10,7 +10,7 @@ runner :
   paceMin : 10
   paceMax : 0
   # for visual purposes
-  altitudeMax : 2000
+  altitudeMax : 1000
 
 ## Filters (and smoothing)
 filter :
