@@ -74,6 +74,8 @@ parse_garmin_tcx_metadata <- function(tcx_nodeset, ns) {
     xml2::xml_find_all(TriggerMethodXPath, ns) %>%
     xml2::xml_text()
 
+  print(length(AverageHeartRateBpm))
+
   tibble::tibble(ActivityId = ActivityId,
                  Laps = Laps, TotalTimeSeconds = TotalTimeSeconds,
                  DistanceMeters = DistanceMeters,
