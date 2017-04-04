@@ -34,18 +34,20 @@ shinyServer(function(input, output, session) {
 
   # main data as loaded from file or selected from store
   dat <- reactive({
-    if (conf$store$use) {
-      print(input$select_data)
-      d <- alldat()
-      get_activity(data = d, id = input$select_data)
-    } else {
-      req(input$import_data)
-      d <- parse_garmin_tcx(input$import_data$datapath)
-      if (conf$store$use) {
-        save_activity(d)
-      }
-      d
-    }
+    req(input$select_data)
+    get_activity(data = alldat(), id = input$select_data)
+    # if (conf$store$use) {
+    #   print(input$select_data)
+    #   d <- alldat()
+    #   get_activity(data = d, id = input$select_data)
+    # } else {
+    #   req(input$import_data)
+    #   d <- parse_garmin_tcx(input$import_data$datapath)
+    #   if (conf$store$use) {
+    #     save_activity(d)
+    #   }
+    #   d
+    # }
   })
 
   # trackpoint data depend on dat
@@ -139,7 +141,7 @@ shinyServer(function(input, output, session) {
 
   observe(import())
 
-  observe(alldat())
+  #observe(alldat())
 
 
   # outputs
