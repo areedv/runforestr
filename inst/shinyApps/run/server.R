@@ -264,8 +264,11 @@ shinyServer(function(input, output, session) {
     laps <- c(min(d$Time), max(d$Time))
 
     # get distribution
-    id <- make_intesity_distribution(laps, d$HeartRateBpm, d$Time,
-                                     l$zones)
+    id <- make_intesity_distribution(laps = laps, pulse = d$HeartRateBpm,
+                                     time = d$Time, pulse_zones = l$zones,
+                                     use_empty_intensities = TRUE)
+
+    print(paste("Intensities:", id$iz))
 
     # format mm:ss annotations
     ## converter function for seconds
