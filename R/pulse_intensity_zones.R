@@ -8,7 +8,7 @@
 #' @param relativeIntesities integer vector of intensity zone intervals
 #'   including endpoints
 #' @param model string model name used for calculating intensity zones, either
-#'   \emph{max_pulse} [default] or \emph{heart_rate_reserve}
+#'   \emph{maxPulse} [default] or \emph{heartRateReserve}
 #'
 #' @return integer vector with intesity heart rate intervals including
 #'   endpoints
