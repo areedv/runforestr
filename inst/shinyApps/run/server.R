@@ -268,7 +268,6 @@ shinyServer(function(input, output, session) {
                                      time = d$Time, pulse_zones = l$zones,
                                      use_empty_intensities = TRUE)
 
-    print(paste("Intensities:", id$iz))
 
     # format mm:ss annotations
     ## converter function for seconds
