@@ -285,29 +285,42 @@ shinyServer(function(input, output, session) {
     color_low <- min(id$iz) + 1
     color_high <- max(id$iz) + 1
 
-    p <- plotly::plot_ly(x = anot_pos, y = id$iz,
-                         #y = ~ y_vals,
-                         type = "bar",
-                         orientation = "h",
-                         hoverinfo = "text",
-                         marker = list(color=l$pzc2[color_low:color_high]),
-                         width = 200, height = 100)
+    p <- plotly::plot_ly(
+      x = anot_pos,
+      y = id$iz,
+      type = "bar",
+      orientation = "h",
+      hoverinfo = "text",
+      marker = list(color=l$pzc2[color_low:color_high]),
+      width = 200, height = 100)
 
-    p %>% plotly::layout(showlegend = FALSE,
-                         xaxis = list(showticklabels = FALSE,
-                                      showgrid = FALSE,
-                                      zeroline = FALSE),
-                         yaxis = list(title = "",
-                                      showticklabels = FALSE,
-                                      showgrid = FALSE,
-                                      zeroline = FALSE),
-                         margin = list(l = 10, r = 10, t = 5, b = 5, pad = 2),
-                         autosize = FALSE) %>%
-      add_annotations(xref = "x", yref = "y", x = anot_pos, y = id$iz,
-                      xanchor = "left", text = anot, showarrow = FALSE,
-                      font = list(size = 10)) %>%
-      add_annotations(xref = "x", yref = "y", x = 0, y = id$iz,
-                      xanchor = "right", text = paste0("I", id$iz),
-                      showarrow = FALSE, font = list(size = 10))
+    p %>% plotly::layout(
+      showlegend = FALSE,
+      xaxis = list(showticklabels = FALSE,
+                   showgrid = FALSE,
+                   zeroline = FALSE),
+      yaxis = list(title = "",
+                   showticklabels = FALSE,
+                   showgrid = FALSE,
+                   zeroline = FALSE),
+      margin = list(l = 10, r = 10, t = 5, b = 5, pad = 2),
+      autosize = FALSE
+      ) %>%
+      add_annotations(
+        xref = "x", yref = "y", x = anot_pos, y = id$iz,
+        xanchor = "left",
+        text = anot,
+        showarrow = FALSE,
+        font = list(size = 10)
+        ) %>%
+      add_annotations(
+        xref = "x", yref = "y",
+        x = 0,
+        y = id$iz,
+        xanchor = "right",
+        text = paste0("I", id$iz),
+        showarrow = FALSE,
+        font = list(size = 10)
+        )
   })
 })
