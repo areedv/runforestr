@@ -12,8 +12,7 @@
 #' @export
 #'
 #' @examples
-make_intesity_distribution <- function(laps, pulse, time,
-                                       pulse_zones) {
+make_intesity_distribution <- function(laps, pulse, time, pulse_zones) {
 
   if (length(laps) < 2) {
     stop("'laps' must contain at least two points in time")
