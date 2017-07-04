@@ -13,15 +13,14 @@
 #'
 #' @examples
 
-make_laps_distance <- function(tp_time, tp_cum_distance,
-                               convert_factor = 1000) {
+make_laps_distance <- function(tp_time, tp_cum_distance) {
 
   if (length(tp_time) != length(tp_cum_distance)) {
     stop("Time and distance arguments must be of same length")
   }
 
   # convert cumulative distance to whatever specified
-  d <- tp_cum_distance / convert_factor
+  d <- tp_cum_distance / conf$obs$conversion$distance_denominator
 
   # find indices of integer break points
   l <- length(d)
