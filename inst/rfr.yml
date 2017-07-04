@@ -36,3 +36,8 @@ store :
     path : ~/Desktop/
   remote :
     path : runforestr
+
+## API tokens
+api :
+  geo :
+    username : runforestr
