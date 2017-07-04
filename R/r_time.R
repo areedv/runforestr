@@ -11,7 +11,7 @@
 #' @examples
 r_time <- function(data, t0, t1, segments) {
 
-  conf <- yaml::yaml.load_file(system.file("rfr.yml", package = "runforestr"))
+  #conf <- yaml::yaml.load_file(system.file("rfr.yml", package = "runforestr"))
 
   # prepare for reactive data
   if(missing(t0)) {

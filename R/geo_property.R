@@ -13,7 +13,7 @@
 geo_property <- function(lng, lat, datetime = Sys.time(), property = "name") {
 
   # get config
-  conf <- yaml::yaml.load_file(system.file("rfr.yml", package = "runforestr"))
+  #conf <- yaml::yaml.load_file(system.file("rfr.yml", package = "runforestr"))
 
   # build string
   apiUrl <- "http://api.geonames.org/"
