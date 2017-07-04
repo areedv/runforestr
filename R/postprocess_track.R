@@ -9,11 +9,6 @@
 #' @examples
 postprocess_track <- function(meta, data) {
 
-  # get config
-  if (!exists("conf")) {
-    conf <- yaml::yaml.load_file(system.file("rfr.yml", package = "runforestr"))
-  }
-
   # possible to change timezone here?
   attr(meta$Laps, "tzone") <- "CET"
   attr(data$Time, "tzone") <- "CET"

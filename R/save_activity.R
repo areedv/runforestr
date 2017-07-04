@@ -10,7 +10,6 @@
 
 save_activity <- function(data) {
 
-  conf <- yaml::yaml.load_file(system.file("rfr.yml", package = "runforestr"))
   outfilename <- paste0(conf$store$local$path, conf$store$filename)
   dat <- load_activity()
   is_duplicate = FALSE
@@ -28,10 +27,8 @@ save_activity <- function(data) {
       data$data <- rbind(dat$data, data$data)
     }
   }
+
   if (!is_duplicate){
-    #rownames(data) <- NULL
-    # rfrData <- list(filename=filename, md5sum=md5sum, acti=list(acti),
-    #                 meta=list(meta), data=list(data))
     saveRDS(data, outfilename)
   }
 }

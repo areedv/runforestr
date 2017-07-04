@@ -11,8 +11,6 @@
 #' @examples
 r_time <- function(data, t0, t1, segments) {
 
-  #conf <- yaml::yaml.load_file(system.file("rfr.yml", package = "runforestr"))
-
   # prepare for reactive data
   if(missing(t0)) {
     t0 <- min(data$Time)
@@ -44,11 +42,6 @@ r_time <- function(data, t0, t1, segments) {
   pace <- data$Pace %>%
     replace_nas() %>% runmed(1)
   data <- dplyr::mutate(data, Pace = pace)
-
-  # get config
-  if (!exists("conf")) {
-    conf <- yaml::yaml.load_file(system.file("rfr.yml", package = "runforestr"))
-  }
 
   # range of y axis
   ## pulse

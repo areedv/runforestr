@@ -7,8 +7,6 @@
 
 load_activity <- function() {
 
-  conf <- yaml::yaml.load_file(system.file("rfr.yml", package = "runforestr"))
-
   filename <- paste0(conf$store$local$path, conf$store$filename)
 
   if (file.exists(filename)) {
