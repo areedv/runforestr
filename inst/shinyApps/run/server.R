@@ -4,7 +4,10 @@ library(runforestr)
 
 # get config
 if (!exists("conf")) {
-  conf <- yaml::yaml.load_file(system.file("rfr.yml", package = "runforestr"))
+  assign("conf",
+         yaml::yaml.load_file(system.file("rfr.yml", package = "runforestr")),
+         envir = .GlobalEnv)
+  #conf <- yaml::yaml.load_file(system.file("rfr.yml", package = "runforestr"))
 }
 
 # load data if defined
