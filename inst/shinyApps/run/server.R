@@ -27,7 +27,7 @@ shinyServer(function(input, output, session) {
 
   # all data in store, if any
   alldat <- reactive({
-    if (file.exists(paste0(conf$store$local$path, conf$store$filename))) {
+    if (conf$store$use) {
       load_activity()
     } else {
       req(FALSE)
@@ -172,8 +172,7 @@ shinyServer(function(input, output, session) {
     l <- tpdat()
 
     if (input$lap_type == "equal distance"){
-      laps <- make_laps_distance(d$Time, d$DistanceMeters,
-                                 convert_factor = 1000)
+      laps <- make_laps_distance(d$Time, d$DistanceMeters)
     } else {
       laps <- dplyr::distinct(d, Lap) %>% magrittr::use_series(Lap)
       if (length(laps) <= 1) {
