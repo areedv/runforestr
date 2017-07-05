@@ -219,27 +219,29 @@ shinyServer(function(input, output, session) {
       )
     }
 
-    p %>% plotly::layout(barmode = "stack", showlegend = FALSE,
-                         xaxis = list(showticklabels = FALSE, showgrid = FALSE,
-                                      zeroline = FALSE),
-                         yaxis = list(title = "", range = y_range,
-                                      showticklabels = FALSE, showgrid = FALSE,
-                                      zeroline = FALSE),
-                         margin = list(l = 10, r = 10, t = 5, b = 5, pad = 2)) %>%
-
-      add_annotations(xref = "x", yref = "y", x = 0, y = 1:length(anot),
-                      xanchor = "left", text = anot, showarrow = FALSE,
-                      font = list(size = 10)) %>%
-
-      add_annotations(xref = "x", yref = "y", x = max(anot_pos$d),
-                      y = 1:length(anot), xanchor = "right",
-                      text = as.character(1:length(anot)), showarrow = FALSE,
-                      font = list(size = 10)) %>%
-      plotly::config(displayModeBar = FALSE, displayLogo = FALSE,
-                     modeBarButtonsToRemove = list("sendDataToCloud", "zoom2d",
-                                                   "pan2d", "select2d", "select2d",
-                                                   "zoomIn2d", "zoomOut2d", "toImage"))
-
+    p %>%
+      plotly::layout(
+        barmode = "stack", showlegend = FALSE,
+        xaxis = list(showticklabels = FALSE, showgrid = FALSE, zeroline = FALSE),
+        yaxis = list(title = "", range = y_range, showticklabels = FALSE,
+                     showgrid = FALSE, zeroline = FALSE),
+        margin = list(l = 10, r = 10, t = 5, b = 5, pad = 2)
+      ) %>%
+      add_annotations(
+        xref = "x", yref = "y", x = 0, y = 1:length(anot), xanchor = "left",
+        text = anot, showarrow = FALSE, font = list(size = 10)
+      ) %>%
+      add_annotations(
+        xref = "x", yref = "y", x = max(anot_pos$d), y = 1:length(anot),
+        xanchor = "right", text = as.character(1:length(anot)),
+        showarrow = FALSE, font = list(size = 10)
+      ) %>%
+      plotly::config(
+        displayModeBar = FALSE, displayLogo = FALSE,
+        modeBarButtonsToRemove = list("sendDataToCloud", "zoom2d", "pan2d",
+                                      "select2d", "select2d", "zoomIn2d",
+                                      "zoomOut2d", "toImage")
+      )
   })
 
   output$distribution_zone_plot <- plotly::renderPlotly({
@@ -296,12 +298,14 @@ shinyServer(function(input, output, session) {
       autosize = FALSE
       ) %>%
       add_annotations(
-        xref = "x", yref = "y", x = anot_pos, y = id$iz,
+        xref = "x", yref = "y",
+        x = anot_pos,
+        y = id$iz,
         xanchor = "left",
         text = anot,
         showarrow = FALSE,
         font = list(size = 10)
-        ) %>%
+      ) %>%
       add_annotations(
         xref = "x", yref = "y",
         x = 0,
@@ -310,10 +314,11 @@ shinyServer(function(input, output, session) {
         text = paste0("I", id$iz),
         showarrow = FALSE,
         font = list(size = 10)
-        ) %>%
-      plotly::config(displayModeBar = FALSE, displayLogo = FALSE,
-                     modeBarButtonsToRemove = list("sendDataToCloud", "zoom2d",
-                                                   "pan2d", "select2d", "select2d",
-                                                   "zoomIn2d", "zoomOut2d", "toImage"))
+      ) %>%
+      plotly::config(
+        displayModeBar = FALSE, displayLogo = FALSE,
+        modeBarButtonsToRemove = list("sendDataToCloud", "zoom2d", "pan2d",
+                                      "select2d", "select2d", "zoomIn2d",
+                                      "zoomOut2d", "toImage"))
   })
 })
