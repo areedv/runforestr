@@ -29,6 +29,19 @@ save_activity <- function(data) {
   }
 
   if (!is_duplicate){
-    saveRDS(data, outfilename)
+    tempFilePath <- file.path(tempdir(), conf$store$filename)
+    saveRDS(data, tempFilePath)
+    if (conf$store$dropbox$use) {
+      # need to check that directory exists, create if not
+      dbDirs <- rdrop2::drop_dir()
+      if (!conf$store$dropbox$path %in% basename(dbDirs$path)) {
+        print("Creating new directory in Dropbox\n")
+        rdrop2::drop_create(path = conf$store$dropbox$path)
+      }
+      rdrop2::drop_upload(file = tempFilePath, dest = conf$store$dropbox$path)
+    }
+    if (conf$store$local$use) {
+      saveRDS(data, outfilename)
+    }
   }
 }
