@@ -30,11 +30,12 @@ obs :
 ## Data persistence
 store :
   use : TRUE
-  dir : runforestr
-  filename : rfrData
+  filename : rfrData.rds
   local :
-    path : ~/Desktop/
-  remote :
+    use : TRUE
+    path : ~/runforestr
+  dropbox :
+    use : TRUE
     path : runforestr
 
 ## API tokens
