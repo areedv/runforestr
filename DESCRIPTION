@@ -7,6 +7,7 @@ Description: Parse and play with run data
 Depends: R (>= 3.3.2)
 Imports:
   digest,
+  jsonlite,
   leaflet,
   magrittr,
   plotly,
