@@ -310,6 +310,10 @@ shinyServer(function(input, output, session) {
         text = paste0("I", id$iz),
         showarrow = FALSE,
         font = list(size = 10)
-        )
+        ) %>%
+      plotly::config(displayModeBar = FALSE, displayLogo = FALSE,
+                     modeBarButtonsToRemove = list("sendDataToCloud", "zoom2d",
+                                                   "pan2d", "select2d", "select2d",
+                                                   "zoomIn2d", "zoomOut2d", "toImage"))
   })
 })
