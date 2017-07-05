@@ -11,6 +11,7 @@ Imports:
   leaflet,
   magrittr,
   plotly,
+  rdrop2,
   tibble,
   yaml,
   xml2
