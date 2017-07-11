@@ -7,7 +7,9 @@ navbarPage("Run Forest. Run!", id="run",
                         fileInput("import_data", "Import from file", multiple = FALSE,
                                   accept = c("text/xml", ".tcx"))
                       ),
-                      mainPanel()
+                      mainPanel(
+                        DT::dataTableOutput("tbl")
+                      )
                       )
                     ),
            tabPanel(title="Interactive map",

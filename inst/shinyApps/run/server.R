@@ -159,6 +159,9 @@ shinyServer(function(input, output, session) {
                 multiple = TRUE)
   })
 
+  # ui for summary table
+  output$tbl = DT::renderDataTable(summary_table(data = date_range_dat()))
+
   output$trackpoint_plot <- plotly::renderPlotly({
     trackpoint_plot(tpdat())
   })
