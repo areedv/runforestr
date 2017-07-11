@@ -1,8 +1,8 @@
 navbarPage("Run Forest. Run!", id="run",
            tabPanel("Data",
                     sidebarLayout(
-
                       sidebarPanel(
+                        uiOutput("dateRange"),
                         uiOutput("selectData"),
                         fileInput("import_data", "Import from file", multiple = FALSE,
                                   accept = c("text/xml", ".tcx"))
