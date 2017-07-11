@@ -34,10 +34,16 @@ shinyServer(function(input, output, session) {
     }
   })
 
+  # limit all data by date
+  date_range_dat <- reactive({
+    req(input$date_range)
+    get_timerange(data = alldat(), range = input$date_range)
+  })
+
   # main data as loaded from file or selected from store
   dat <- reactive({
     req(input$select_data)
-    get_activity(data = alldat(), id = input$select_data)
+    get_activity(data = date_range_dat(), id = input$select_data)
   })
 
   # trackpoint data depend on dat
@@ -132,11 +138,19 @@ shinyServer(function(input, output, session) {
   observe(import())
 
 
+
   # outputs
+
+  # ui for selecting time frame
+  output$dateRange <- renderUI({
+    d <- alldat()
+    dateRangeInput(inputId = "date_range", label = "Date range",
+                   start = min(d$acti$DateTime), end = max(d$acti$DateTime))
+  })
 
   # ui for selecting data
   output$selectData <- renderUI({
-    d <- alldat()
+    d <- date_range_dat()
     selectInput(inputId = "select_data",
                 label = "Select data",
                 choices = setNames(d$acti$ActivityId,
