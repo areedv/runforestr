@@ -42,3 +42,9 @@ store :
 api :
   geo :
     username : runforestr
+
+## System
+net :
+  proxy :
+    server :
+    port :
