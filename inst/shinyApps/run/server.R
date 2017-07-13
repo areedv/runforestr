@@ -161,18 +161,46 @@ shinyServer(function(input, output, session) {
 
   # ui for summary table
   output$tbl = DT::renderDataTable({
-    s <- summary_table(data = date_range_dat())
-    t <- dplyr::tibble(Type=s$Sport, Time=strftime(s$DateTime, format="%F %R"),
-                       duration = f(s$dur, "%H:%M"),
-                       km=round(s$km, digits = 1),
-                       maxHR=s$maxHR,
-                       mSpeed=round(s$mspeed, digits = 1),
-                       mPace=f(s$mpace),
-                       year = as.numeric(strftime(s$DateTime, "%Y")),
-                       Month = as.numeric(strftime(s$DateTime, "%m")),
-                       Week = as.numeric(strftime(s$DateTime, "%U")),
-                       Day = as.numeric(strftime(s$DateTime, "%u"))
-    ) %>% arrange(desc(Time))
+
+    # format a given number of mins
+    f <- function(decimal_mins, print_format = "%M:%S") {
+      as.character(decimal_mins * 60) %>%
+        strptime(format = "%s", tz="Greenwich") %>%
+        format(print_format)
+    }
+
+    s <- summary_table(date_range_dat())
+    # t <- dplyr::tibble(Type=s$Sport, Time=strftime(s$DateTime, format="%F %R"),
+    #                    duration = f(s$dur, "%H:%M"),
+    #                    km=round(s$km, digits = 1),
+    #                    maxHR=s$maxHR,
+    #                    mSpeed=round(s$mspeed, digits = 1),
+    #                    mPace=f(s$mpace),
+    #                    year = as.numeric(strftime(s$DateTime, "%Y")),
+    #                    Month = as.numeric(strftime(s$DateTime, "%m")),
+    #                    Week = as.numeric(strftime(s$DateTime, "%U")),
+    #                    Day = as.numeric(strftime(s$DateTime, "%u"))
+    # ) %>% arrange(desc(Time))
+
+    # which grouping?
+    g <- "month" #"week"
+    if (input$dataPeriod == "month") {
+      s <- s %>%
+        dplyr::mutate(group=paste0(as.character(lubridate::year(DateTime)),
+                                   as.character(lubridate::month(DateTime))),
+                      Period=lubridate::month(DateTime, label = TRUE))
+    }
+    if (input$dataPeriod == "week") {
+      s <- s %>%
+        dplyr::mutate(group=paste0(as.character(lubridate::year(DateTime)),
+                                   as.character(lubridate::week(DateTime))),
+                      Period=lubridate::week(DateTime))
+    }
+    t <- dplyr::group_by(s, group) %>%
+      summarise(Year=min(lubridate::year(DateTime)),
+                Period=min(Period),
+                Distance=round(sum(km), digits = 1),
+                Duration=f(sum(dur), "%Hh %Mm"), N=n())
     t
     })
 
