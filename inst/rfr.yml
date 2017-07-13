@@ -35,7 +35,7 @@ store :
     use : TRUE
     path : ~/runforestr
   dropbox :
-    use : TRUE
+    use : FALSE
     path : runforestr
 
 ## API tokens
