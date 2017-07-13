@@ -160,7 +160,21 @@ shinyServer(function(input, output, session) {
   })
 
   # ui for summary table
-  output$tbl = DT::renderDataTable(summary_table(data = date_range_dat()))
+  output$tbl = DT::renderDataTable({
+    s <- summary_table(data = date_range_dat())
+    t <- dplyr::tibble(Type=s$Sport, Time=strftime(s$DateTime, format="%F %R"),
+                       duration = f(s$dur, "%H:%M"),
+                       km=round(s$km, digits = 1),
+                       maxHR=s$maxHR,
+                       mSpeed=round(s$mspeed, digits = 1),
+                       mPace=f(s$mpace),
+                       year = as.numeric(strftime(s$DateTime, "%Y")),
+                       Month = as.numeric(strftime(s$DateTime, "%m")),
+                       Week = as.numeric(strftime(s$DateTime, "%U")),
+                       Day = as.numeric(strftime(s$DateTime, "%u"))
+    ) %>% arrange(desc(Time))
+    t
+    })
 
   output$trackpoint_plot <- plotly::renderPlotly({
     trackpoint_plot(tpdat())
