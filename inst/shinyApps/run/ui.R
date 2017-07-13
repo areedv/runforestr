@@ -2,6 +2,10 @@ navbarPage("Run Forest. Run!", id="run",
            tabPanel("Data",
                     sidebarLayout(
                       sidebarPanel(
+                        radioButtons("dataPeriod", "Data period",
+                                     choices = c("Weekly" = "week",
+                                                 "Monthly" = "month"),
+                                     selected = "week"),
                         uiOutput("dateRange"),
                         uiOutput("selectData"),
                         fileInput("import_data", "Import from file", multiple = FALSE,
